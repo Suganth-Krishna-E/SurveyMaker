@@ -1,0 +1,59 @@
+/* Common properties */
+
+* {
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.wid13 {
+    width: 33.33%;
+}
+
+.wid23 {
+    width: 66.66%;
+}
+
+.wid12 {
+    width: 50%;
+}
+
+.wid1 {
+    width: 100%;
+}
+
+.wid34 {
+    width: 75%;
+}
+
+.wid45 {
+    width: 80%
+}
+
+.dis-ib {
+    display: inline-block;
+}
+
+.dis-i {
+    display: inline;
+}
+
+.dis-fl {
+    display: flex;
+}
+
+.dis-gr {
+    display: grid;
+}
+
+.li-wo-points {
+    list-style: none;
+}
+
+.po-rel {
+    position: relative;
+}
+
+.po-abs {
+    position: absolute;
+}

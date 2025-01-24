@@ -1,0 +1,276 @@
+/* Header Properties */
+
+header {
+    margin-top: 2rem;
+    padding: 1rem 5rem;
+    width: 60%;
+    margin: auto;
+    box-sizing: content-box;
+}
+
+.header-title {
+    height: 1rem;
+    vertical-align: middle;
+    font-size: 2rem;
+    background-color: rgb(228, 228, 228);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    align-items: center;
+}
+
+.header-description {
+    width: 45%;
+    margin: 0 1rem;
+    padding-left: 1rem;
+    line-height: 1.8rem;
+    font-size: 1.1rem;
+}
+
+
+.main-container {
+    background-color: #f9f9f9;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: auto;
+}
+
+.login-container {
+    width: 70%;
+    justify-content: center;
+    margin: auto;
+}
+
+.fl-left {
+    margin: 0;
+    float: left;
+}
+
+form {
+    background: transparent;
+    width: 100%;
+    height: auto;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 1rem 3rem;
+    gap: 1rem;
+}
+
+.user-form {
+    justify-content: center;
+}
+
+
+.input-fields-two-column {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 50% 50%;
+}
+
+form div {
+    margin: 1rem 0;
+    /* margin: auto; */
+    box-sizing: border-box;
+    padding-left: 0;
+    width: 80%;
+}
+
+form div label {
+    font-size: 1.2rem;
+    margin-bottom: 0rem;
+    display: block;
+    color: #333;
+}
+
+form div input[type="text"],
+form div input[type="email"],
+form div input[type="date"],
+form div input[type="tel"],
+form div input[type="password"],
+textarea {
+    margin: 0.5rem 0;
+    height: 2.5rem;
+    width: 100%;
+    border-radius: 0.8rem;
+    border: 2px solid #ccc;
+    padding-left: 1rem;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+
+textarea {
+    height: 6rem;
+    resize: none;
+}
+
+form div button {
+    background-color: #43403c;
+    color: #fff;
+    font-size: 1rem;
+    padding: 0.8rem;
+    border-radius: 1rem;
+    width: 50%;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+form div button:hover {
+    background-color: #8BC34A;
+    color: black;
+}
+
+input[type="radio"] {
+    display: none;
+}
+
+.selector-radio label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    color: gray;
+    transition: color 0.3s ease;
+}
+
+.selector-radio label span {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border: 2px solid lightgray;
+    border-radius: 50%;
+    position: relative;
+    background-color: white;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.selector-radio input[type="radio"]:checked+label span::before {
+    content: '';
+    width: 14px;
+    height: 14px;
+    background-color: #4CAF50;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+
+.selector-radio label:hover span {
+    border-color: #4CAF50;
+}
+
+#age-display {
+    font-size: 1rem;
+    border-radius: 1rem;
+    padding: 0.5rem;
+}
+
+#submit-field {
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+}
+
+#submit-field div button {
+    margin: auto;
+    display: flex;
+    justify-content: center;
+}
+
+#output-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+
+#output-table tr {
+    background-color: #c3e6df;
+    color: #0d0808;
+    text-align: left;
+}
+
+#output-table th,
+#output-table td {
+    padding: 12px 15px;
+    border: 1px solid #dddddd;
+}
+
+#output-table tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+#output-table tr:last-of-type {
+    border-bottom: 2px solid #009879;
+}
+
+#output-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.output-container {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.output-container div {
+    font-size: 1.5rem;
+}
+
+.checkbox-controls {
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-evenly;
+    font-size: larger;
+    margin: 2rem;
+    box-sizing: border-box;
+}
+
+input[type="checkbox"] {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    margin: 0 10px;
+    vertical-align: middle;
+    border: 2px solid #000;
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+}
+
+input[type="checkbox"]:checked {
+    background-color: #000;
+    border-color: #000;
+}
+
+input[type="checkbox"]:checked::before {
+    content: "✓";
+    color: white;
+    font-size: 20px;
+    display: block;
+    text-align: center;
+    line-height: 20px;
+}
+
+input[type="checkbox"]:hover {
+    border-color: #fff;
+}
+
+.input-fields {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+}
+
+.submit-group {
+    justify-content: center;
+    margin: auto;
+}

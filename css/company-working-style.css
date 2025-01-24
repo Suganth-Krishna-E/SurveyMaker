@@ -1,0 +1,82 @@
+/* main properties */
+
+main {
+    margin: auto;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.list-of-companies-selector {
+    /* width: max-content; */
+    margin: 1rem auto;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(199, 245, 162);
+    border-radius: 1rem;
+    width: fit-content;
+    padding: 1rem;
+}
+
+select {
+    margin: 0.5rem;
+    background-color: rgb(199, 245, 162);;
+    border: 1px solid #ccc;
+    padding: 1rem;
+    font-size: 1rem;
+    border-radius: 0.5rem;
+}
+
+.companies-list-container {
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+    background-color: #f1f4d6;
+}
+
+.company-list-name {
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-right: 1rem;
+    color: #333;
+}
+
+.company-times {
+    margin: 0.5rem;
+    align-items: center;
+}
+
+.company-working-times-UTC {
+    display: flex;
+    flex-direction: column;
+    margin-right: 1rem;
+}
+
+.company-opening-time,
+.company-closing-time {
+    font-size: 1rem;
+    color: #555;
+}
+
+.company-time-zone {
+    font-size: 1rem;
+    color: #777;
+    margin-right: 1rem;
+}
+
+.company-current-working-status-working {
+    font-size: 1rem;
+    color: #28a745;
+    font-weight: bold;
+}
+
+.company-current-working-status-notworking {
+    font-size: 1rem;
+    color: #d709ab;
+    font-weight: bold;
+}
+
