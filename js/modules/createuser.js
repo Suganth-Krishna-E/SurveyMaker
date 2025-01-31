@@ -204,8 +204,21 @@ submitbutton[0].addEventListener('click', (e) => {
         }
         console.log(`User created ${indexScriptModule.addNewUser(data)}`);
         console.log(e);    
+        clearAllInputs();
+        swal({
+            title: "User Created!",
+            text: "The user details are sucessfully created.",
+            icon: "success"
+        });
+        loadLoginModule();
+        console.log("Login Module Loaded");
     }
     else {
+        swal({
+            icon: "error",
+            title: "Oops...",
+            text: "The inputs are not valid",
+          });
         console.log("Not all fields are valid");
     }
     e.preventDefault();
@@ -504,6 +517,20 @@ function validatePassword(password) {
 
 function getData() {
    return returnElement;
+}
+
+function clearAllInputs() {
+    for(const element of inputelements) {
+        element.value = '';
+    }
+}
+
+async function loadIndexModule() {
+    await indexScriptModule.loadIndexPage();
+}
+
+async function loadLoginModule() {
+    await indexScriptModule.loadModule('login');
 }
 
 export { getData };

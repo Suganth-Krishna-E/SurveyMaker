@@ -25,6 +25,7 @@ async function loadModule(moduleName) {
         }
     
         mainContainer.appendChild(moduleData.getData());
+        history.pushState({page: moduleName} , null, moduleName);
     }
     else {
         loadNavBar();
@@ -48,7 +49,6 @@ async function loadNavBar() {
         element.addEventListener('click', () => {
             const moduleName = element.getAttribute('id');
             loadModule(moduleName);
-            history.pushState({page: moduleName} , null, moduleName);
             currentState = history.state;
             console.log(currentState);
         })
@@ -114,4 +114,4 @@ function validateNewUserInsertion(data) {
     }
 }
 
-export default { checkIsUserAvailable, addNewUser };
+export default { checkIsUserAvailable, addNewUser, loadModule };
