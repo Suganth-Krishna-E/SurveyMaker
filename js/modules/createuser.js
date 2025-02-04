@@ -194,17 +194,18 @@ const submitbutton = returnElement.getElementsByTagName('button');
 
 submitbutton[0].addEventListener('click', (e) => {
     checkAllFeildsValid();
-    if(allElemntsValid === true) {
-        const data = {
-            name: inputelements[0].value,
-            email: inputelements[1].value,
-            customerid: inputelements[2].value,
-            pincode: inputelements[3].value,
-            password: inputelements[4].value,
-        }
-        console.log(`User created ${indexScriptModule.addNewUser(data)}`);
+    const data = {
+        name: inputelements[0].value,
+        email: inputelements[1].value,
+        customerid: inputelements[2].value,
+        pincode: inputelements[3].value,
+        password: inputelements[4].value,
+    }
+    if(allElemntsValid === true && indexScriptModule.addNewUser(data)) {        
+        console.log(`User created`);
         console.log(e);    
         clearAllInputs();
+        allElemntsValid = true;
         swal({
             title: "User Created!",
             text: "The user details are sucessfully created.",

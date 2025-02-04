@@ -4,7 +4,9 @@ let currentState;
 const routingTitleLocationModulesMap = {
     'navBar': './modules/navbar.js',
     'createUser': './modules/createuser.js',
-    'login': './modules/login.js'
+    'login': './modules/login.js',
+    'home': './modules/home.js',
+    'createsurvey': './modules/createsurvey.js',
 }
 
 
@@ -48,9 +50,10 @@ async function loadNavBar() {
     listNavBarElements.forEach((element) => {
         element.addEventListener('click', () => {
             const moduleName = element.getAttribute('id');
+            console.log(moduleName);
             loadModule(moduleName);
             currentState = history.state;
-            console.log(currentState);
+            // console.log(currentState);
         })
     })
 }
@@ -81,8 +84,11 @@ class User {
     }
 }
 
-const listOfUserDetails = [];
+const listOfUserDetails = [
+    new User('Suganth Krishna E', 'suganth@trustrace.com', 'cus_001', '638812', 'Suganth_7575')
+];
 const userCustomerIdList = [];
+userCustomerIdList.push('cus_001');
 
 function addNewUser(data) {
     console.log(listOfUserDetails);
@@ -114,4 +120,15 @@ function validateNewUserInsertion(data) {
     }
 }
 
-export default { checkIsUserAvailable, addNewUser, loadModule };
+
+function loginToSite(username, password) {
+    const user = listOfUserDetails.find((user) => user.username === username && user.password === password);
+    if(user) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+export default { checkIsUserAvailable, addNewUser, loadModule, loginToSite };

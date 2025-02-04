@@ -1,4 +1,5 @@
 import codeMaker from '../utils/codemaker.js';
+import indexScriptModule from '../index-script.js';
 
 const loginFormInput = {
     tag: 'main',
@@ -130,6 +131,27 @@ function attachValidationHandlers() {
                 e.preventDefault();
                 return;
             }
+            else {
+                e.preventDefault();
+                if(indexScriptModule.loginToSite(document.getElementById('login-username').value, document.getElementById('login-password').value)) {
+                    swal({
+                        title: "Login Sucessful",
+                        text: "Please use our features",
+                        icon: "success",
+                        button: "Ok",
+                      });
+                      loadHomeModule();
+                }
+                else {
+                    swal({
+                        title: "Wrong Credentials",
+                        text: "Please provide corerct credentials",
+                        icon: "warning",
+                        button: "Ok",
+                      });
+                }
+
+            }
         }
     });
 
@@ -144,11 +166,15 @@ function attachValidationHandlers() {
 
 // Validation Helpers
 function validateAlphanumeric(value) {
-    return /^[a-zA-Z0-9]+$/.test(value);
+    return true;
 }
 
 function validatePassword(value) {
     return value.length >= 8; // Add more rules if necessary
+}
+
+async function loadHomeModule() {
+    await indexScriptModule.loadModule('home');
 }
 
 export { getData };
