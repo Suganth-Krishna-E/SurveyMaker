@@ -29,6 +29,9 @@ async function loadModule(moduleName) {
         mainContainer.appendChild(moduleData.getData());
         history.pushState({page: moduleName} , null, moduleName);
     }
+    else if(moduleName === 'home') {
+        
+    }
     else {
         loadNavBar();
     }
@@ -131,4 +134,17 @@ function loginToSite(username, password) {
     }
 }
 
-export default { checkIsUserAvailable, addNewUser, loadModule, loginToSite };
+function loadHomePageAfterLogin(username) {
+    loadLoginNavBar(username);
+    loadModule('home');
+}
+
+async function loadLoginNavBar(username) {
+    const loginNavBarModule = await import('./modules/loginnavbar.js');
+    loginNavBarModule.loadInitialData(username);
+    const loginNavBarElement = loginNavBarModule.getData();
+
+    mainContainer.replaceChildren(loginNavBarElement);
+}
+
+export default { checkIsUserAvailable, addNewUser, loadModule, loginToSite, loadHomePageAfterLogin };

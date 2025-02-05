@@ -140,7 +140,7 @@ function attachValidationHandlers() {
                         icon: "success",
                         button: "Ok",
                       });
-                      loadHomeModule();
+                      indexScriptModule.loadHomePageAfterLogin(document.getElementById('login-username').value);
                 }
                 else {
                     swal({
@@ -173,8 +173,6 @@ function validatePassword(value) {
     return value.length >= 8; // Add more rules if necessary
 }
 
-async function loadHomeModule() {
-    await indexScriptModule.loadModule('home');
-}
+
 
 export { getData };
