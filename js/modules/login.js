@@ -107,7 +107,6 @@ function getData() {
     return returnElement;
 }
 
-
 const validationsOfElements = {
     'login-username': (event) => {
         const value = event.target.value;
@@ -119,7 +118,6 @@ const validationsOfElements = {
     }
 };
 
-
 function attachValidationHandlers() {
     const inputElements = returnElement.getElementsByTagName('input');
     const formBase = returnElement.getElementsByClassName('login-base-form')[0];
@@ -130,27 +128,14 @@ function attachValidationHandlers() {
                 element.focus();
                 e.preventDefault();
                 return;
-            }
-            else {
+            } else {
                 e.preventDefault();
-                if(indexScriptModule.loginToSite(document.getElementById('login-username').value, document.getElementById('login-password').value)) {
-                    swal({
-                        title: "Login Sucessful",
-                        text: "Please use our features",
-                        icon: "success",
-                        button: "Ok",
-                      });
-                      indexScriptModule.loadHomePageAfterLogin(document.getElementById('login-username').value);
+                if (indexScriptModule.loginToSite(document.getElementById('login-username').value, document.getElementById('login-password').value)) {
+                    swal("Login Successful", "Please use our features", "success");
+                    indexScriptModule.loadHomePageAfterLogin(document.getElementById('login-username').value);
+                } else {
+                    swal("Wrong Credentials", "Please provide correct credentials", "warning");
                 }
-                else {
-                    swal({
-                        title: "Wrong Credentials",
-                        text: "Please provide corerct credentials",
-                        icon: "warning",
-                        button: "Ok",
-                      });
-                }
-
             }
         }
     });
@@ -172,7 +157,5 @@ function validateAlphanumeric(value) {
 function validatePassword(value) {
     return value.length >= 8; // Add more rules if necessary
 }
-
-
 
 export { getData };

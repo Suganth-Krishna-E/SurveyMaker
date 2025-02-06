@@ -1,0 +1,117 @@
+body {
+    background-color: #f0f0f0;
+    color: #333;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.main-container {
+    width: 80%;
+    margin: 2rem auto;
+    padding: 1.6rem; /* Reduced by 20% */
+    background-color: #fff;
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+    border-radius: 0.8rem;
+}
+
+.survey-header, .survey-footer {
+    margin-bottom: 1.6rem; /* Reduced by 20% */
+}
+
+.survey-header input, .survey-header textarea {
+    width: 100%;
+    padding: 0.64rem; /* Reduced by 20% */
+    margin-bottom: 0.8rem; /* Reduced by 20% */
+    border: 0.1rem solid #ccc;
+    border-radius: 0.4rem;
+    font-size: 1.28rem; /* Reduced by 20% */
+}
+
+.survey-body {
+    margin-bottom: 1.6rem; /* Reduced by 20% */
+}
+
+.question-container {
+    display: flex;
+    flex-direction: column;
+    padding: 0.8rem; /* Reduced by 20% */
+    margin-bottom: 0.8rem; /* Reduced by 20% */
+    border: 0.1rem solid #ddd;
+    border-radius: 0.4rem;
+    background-color: #fafafa;
+}
+
+.question-header {
+    display: flex;
+    flex-direction: row;
+    gap: 0.8rem; /* Reduced by 20% */
+    margin-bottom: 0.8rem; /* Reduced by 20% */
+}
+
+.extra-notes-container, .min-max-container, .answer-notes-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    gap: 0.8rem; /* Reduced by 20% */
+    margin-bottom: 0.8rem; /* Reduced by 20% */
+}
+
+.min-length, .max-length, .min-value, .max-value {
+    width: 32px; /* Reduced by 20% */
+    height: 20px; /* Reduced by 20% */
+}
+
+.question-title, .question-type, .answer-box, .answer-numeric, .file-answer {
+    width: 100%;
+    padding: 0.48rem; /* Reduced by 20% */
+    margin-bottom: 0.8rem; /* Reduced by 20% */
+    border: 0.1rem solid #ccc;
+    border-radius: 0.4rem;
+    font-size: 1.28rem; /* Reduced by 20% */
+}
+
+.answer-box {
+    height: 64px; /* Reduced by 20% */
+}
+
+.scq-answer-container, .mcq-answer-container, .file-answer-container, .text-answer-container, .numeric-answer-container {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0.8rem; /* Reduced by 20% */
+}
+
+button {
+    padding: 0.64rem 0.96rem; /* Reduced by 20% */
+    border: none;
+    border-radius: 0.4rem;
+    cursor: pointer;
+    font-size: 1.28rem; /* Reduced by 20% */
+}
+
+#add-question {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#submit-survey {
+    background-color: #008CBA;
+    color: white;
+}
+
+.delete-question, .copy-question {
+    background-color: #f44336;
+    color: white;
+    align-self: flex-end;
+    margin-top: 0.4rem; /* Reduced by 20% */
+    width: 120px; /* Reduced by 20% */
+    margin-right: 0.4rem; /* Reduced by 20% */
+}
+
+.copy-question {
+    background-color: #4CAF50;
+}
+
+button:hover {
+    opacity: 0.8;
+}

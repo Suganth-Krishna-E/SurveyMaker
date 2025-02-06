@@ -1,6 +1,6 @@
 import codeMaker from '../utils/codemaker.js';
 
-let questionCount = 1; // Auto-incrementing question ID
+let questionCount = 1;
 
 const createSurveyForm = {
     tag: 'div',
@@ -10,14 +10,14 @@ const createSurveyForm = {
             tag: 'div',
             attributes: { class: 'survey-header' },
             subTags: [
-                { tag: 'input', attributes: { type: 'text', id: 'survey-title', placeholder: 'Survey Title' } },
-                { tag: 'textarea', attributes: { id: 'survey-description', placeholder: 'Survey Description' } }
+                { tag: 'textarea', attributes: { id: 'survey-title', placeholder: 'Survey Title', style: 'width: 70%; resize: none; overflow: hidden; height: auto; min-height: 10px;' } },
+                { tag: 'textarea', attributes: { id: 'survey-description', placeholder: 'Survey Description', style: 'width: 70%; resize: none; overflow: hidden; height: auto; min-height: 10px;' } }
             ]
         },
-        { tag: 'div', attributes: { class: 'survey-body', id: 'questions-container' } },
+        { tag: 'div', attributes: { class: 'survey-body', id: 'questions-container', style: 'margin-top: 1rem;' } },
         {
             tag: 'div',
-            attributes: { class: 'survey-footer' },
+            attributes: { class: 'survey-footer dis-fl space-between' },
             subTags: [
                 { tag: 'button', attributes: { type: 'button', id: 'add-question' }, valueInsideTag: 'Add Question' },
                 { tag: 'button', attributes: { type: 'submit', id: 'submit-survey' }, valueInsideTag: 'Submit Survey' }
@@ -30,20 +30,37 @@ const questionTemplate = (id) => ({
     tag: 'div',
     attributes: { class: 'question-container', id: `question-container-${id}` },
     subTags: [
-        { tag: 'input', attributes: { type: 'text', id: `question-title-${id}`, class: 'question-title', placeholder: 'Question Title' } },
         {
-            tag: 'select',
-            attributes: { id: `question-type-${id}`, class: 'question-type' },
+            tag: 'div',
+            attributes: { class: 'question-header dis-fl' },
             subTags: [
-                { tag: 'option', attributes: { value: 'text' }, valueInsideTag: 'Text' },
-                { tag: 'option', attributes: { value: 'scq' }, valueInsideTag: 'Single Choice Question' },
-                { tag: 'option', attributes: { value: 'mcq' }, valueInsideTag: 'Multiple Choice Question' },
-                { tag: 'option', attributes: { value: 'numeric' }, valueInsideTag: 'Numeric' },
-                { tag: 'option', attributes: { value: 'file' }, valueInsideTag: 'File' }
+                { tag: 'textarea', attributes: { id: `question-title-${id}`, class: 'question-title', placeholder: 'Question Title', style: 'flex: 70%; resize: none; overflow: hidden; height: auto; min-height: 10px;' } },
+                {
+                    tag: 'select',
+                    attributes: { id: `question-type-${id}`, class: 'question-type', style: 'flex: 30%' },
+                    subTags: [
+                        { tag: 'option', attributes: { value: 'text', selected: true }, valueInsideTag: 'Text' },
+                        { tag: 'option', attributes: { value: 'scq' }, valueInsideTag: 'Single Choice Question' },
+                        { tag: 'option', attributes: { value: 'mcq' }, valueInsideTag: 'Multiple Choice Question' },
+                        { tag: 'option', attributes: { value: 'numeric' }, valueInsideTag: 'Numeric' },
+                        { tag: 'option', attributes: { value: 'file' }, valueInsideTag: 'File' }
+                    ]
+                }
             ]
         },
         { tag: 'div', attributes: { class: 'answer-container', id: `answer-container-${id}` } },
-        { tag: 'button', attributes: { type: 'button', class: 'delete-question', id: `delete-question-${id}` }, valueInsideTag: '❌' }
+        {
+            tag: 'div',
+            attributes: { class: 'extra-notes-container dis-fl space-evenly' },
+        },
+        {
+            tag: 'div',
+            attributes: { class: 'button-container dis-fl', style: 'justify-content: flex-end;' },
+            subTags: [
+                { tag: 'button', attributes: { type: 'button', class: 'delete-question', id: `delete-question-${id}`, style: 'width: 150px;' }, valueInsideTag: '❌ Delete' },
+                { tag: 'button', attributes: { type: 'button', class: 'copy-question', id: `copy-question-${id}`, style: 'width: 150px;' }, valueInsideTag: '📋 Copy' }
+            ]
+        }
     ]
 });
 
@@ -55,78 +72,179 @@ function attachEventHandlers(formElement) {
 
     formElement.querySelector('#submit-survey').addEventListener('click', (event) => {
         event.preventDefault();
-        console.log('Survey submitted with questions!');
+        if (validateSurvey(formElement)) {
+            const surveyData = getSurveyData(formElement);
+            console.log(JSON.stringify(surveyData, null, 2));
+            swal("Survey Submitted", "Your survey has been submitted successfully!", "success");
+        } else {
+            swal("Incomplete Survey", "Please fill out all required fields.", "warning");
+        }
+    });
+
+    const textAreas = formElement.querySelectorAll('textarea');
+    textAreas.forEach(textArea => {
+        textArea.addEventListener('input', function() {
+            this.style.height = "auto";
+            this.style.height = this.scrollHeight + "px";
+        });
     });
 }
 
-function addNewQuestion(container) {
+async function addNewQuestion(container) {
     const newQuestion = codeMaker.convertIntoHtml(questionTemplate(questionCount));
     container.appendChild(newQuestion);
-    addQuestionHandlers(newQuestion, questionCount);
+    await addQuestionHandlers(newQuestion, questionCount);
     questionCount++;
 }
 
-function addQuestionHandlers(questionElement, id) {
+async function addQuestionHandlers(questionElement, id) {
     const questionTypeSelect = questionElement.querySelector(`#question-type-${id}`);
     const answerContainer = questionElement.querySelector(`#answer-container-${id}`);
-    questionTypeSelect.addEventListener('change', () => {
-        updateAnswerInput(questionTypeSelect.value, answerContainer, id);
+    questionTypeSelect.addEventListener('change', async () => {
+        await updateAnswerInput(questionTypeSelect.value, answerContainer, id);
     });
     questionElement.querySelector(`#delete-question-${id}`).addEventListener('click', () => {
-        questionElement.remove();
+        swal({
+            title: "Are you sure?",
+            text: "Do you want to delete this question?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete) {
+                questionElement.remove();
+            }
+        });
     });
+    questionElement.querySelector(`#copy-question-${id}`).addEventListener('click', () => {
+        copyQuestion(questionElement);
+        swal("Question Copied", "The question has been copied.", "info");
+    });
+    await updateAnswerInput('text', answerContainer, id); // Set default type to 'text'
 }
 
-function updateAnswerInput(type, container, id) {
+async function updateAnswerInput(type, container, id) {
     container.innerHTML = '';
     let inputElement;
     switch (type) {
         case 'text':
-            inputElement = { tag: 'input', attributes: { type: 'text', class: 'answer-box', placeholder: 'Answer' } };
+            inputElement = await import('../questionTypes/text.js');
             break;
         case 'scq':
-            inputElement = {
-                tag: 'div',
-                attributes: { class: 'scq-answer-container' },
-                subTags: [
-                    { tag: 'input', attributes: { type: 'radio', class: 'scq-choice', name: `scq-group-${id}`, placeholder: 'Option 1' } },
-                    { tag: 'button', attributes: { id: `scq-option-adder-${id}` }, valueInsideTag: 'Add Option' }
-                ]
-            };
+            inputElement = await import('../questionTypes/scq.js');
             break;
         case 'mcq':
-            inputElement = {
-                tag: 'div',
-                attributes: { class: 'mcq-answer-container' },
-                subTags: [
-                    { tag: 'input', attributes: { type: 'checkbox', class: 'mcq-choice', placeholder: 'Option 1' } },
-                    { tag: 'button', attributes: { id: `mcq-option-adder-${id}` }, valueInsideTag: 'Add Option' }
-                ]
-            };
+            inputElement = await import('../questionTypes/mcq.js');
             break;
         case 'numeric':
-            inputElement = { tag: 'input', attributes: { type: 'number', class: 'answer-numeric', placeholder: 'Answer' } };
+            inputElement = await import('../questionTypes/numeric.js');
             break;
         case 'file':
-            inputElement = {
-                tag: 'div',
-                attributes: { class: 'file-answer-container' },
-                subTags: [
-                    { tag: 'input', attributes: { type: 'file', class: 'file-answer' } },
-                    {
-                        tag: 'select',
-                        subTags: [
-                            { tag: 'option', attributes: { value: 'pdf' }, valueInsideTag: 'PDF' },
-                            { tag: 'option', attributes: { value: 'doc' }, valueInsideTag: 'DOC' },
-                            { tag: 'option', attributes: { value: 'jpg' }, valueInsideTag: 'JPG' }
-                        ]
-                    }
-                ]
-            };
+            inputElement = await import('../questionTypes/file.js');
             break;
     }
-    const answerElement = codeMaker.convertIntoHtml(inputElement);
+    const answerElement = codeMaker.convertIntoHtml(inputElement.default(id));
     container.appendChild(answerElement);
+    if (type === 'scq' || type === 'mcq') {
+        addOptionHandlers(container, id, type);
+    }
+}
+
+function addOptionHandlers(container, id, type) {
+    const addOptionButton = container.querySelector(`#${type}-option-adder-${id}`);
+    addOptionButton.addEventListener('click', () => {
+        const optionInput = document.createElement('div');
+        optionInput.className = `${type}-option-container dis-fl`;
+        optionInput.innerHTML = `
+            <input type="${type === 'scq' ? 'radio' : 'checkbox'}" class="${type}-choice" name="${type === 'scq' ? `scq-group-${id}` : ''}" disabled>
+            <textarea class="${type}-option-input" placeholder="Option ${container.querySelectorAll(`.${type}-choice`).length + 1}" style="width: 70%; resize: none; overflow: hidden; height: auto; min-height: 10px;"></textarea>
+        `;
+        addOptionButton.parentNode.insertBefore(optionInput, addOptionButton);
+        optionInput.querySelector('textarea').addEventListener('input', function() {
+            this.style.height = "auto";
+            this.style.height = this.scrollHeight + "px";
+        });
+    });
+}
+
+function copyQuestion(questionElement) {
+    const clonedQuestion = questionElement.cloneNode(true);
+    const questionsContainer = document.querySelector('#questions-container');
+    questionsContainer.appendChild(clonedQuestion);
+    const newId = questionCount++;
+    clonedQuestion.id = `question-container-${newId}`;
+    clonedQuestion.querySelector('.question-title').id = `question-title-${newId}`;
+    clonedQuestion.querySelector('.question-type').id = `question-type-${newId}`;
+    clonedQuestion.querySelector('.answer-container').id = `answer-container-${newId}`;
+    clonedQuestion.querySelector('.delete-question').id = `delete-question-${newId}`;
+    clonedQuestion.querySelector('.copy-question').id = `copy-question-${newId}`;
+    addQuestionHandlers(clonedQuestion, newId);
+}
+
+function validateSurvey(formElement) {
+    const questions = formElement.querySelectorAll('.question-container');
+    let isValid = true;
+    questions.forEach(question => {
+        const questionTitle = question.querySelector('.question-title');
+        if (!questionTitle.value.trim()) {
+            isValid = false;
+            questionTitle.style.borderColor = 'red';
+        } else {
+            questionTitle.style.borderColor = '#ccc';
+        }
+        const answerContainer = question.querySelector('.answer-container');
+        const options = answerContainer.querySelectorAll('textarea');
+        options.forEach(option => {
+            if (!option.value.trim()) {
+                isValid = false;
+                option.style.borderColor = 'red';
+            } else {
+                option.style.borderColor = '#ccc';
+            }
+        });
+        if (answerContainer.querySelector('input[type="file"]')) {
+            const fileInput = answerContainer.querySelector('input[type="file"]');
+            if (fileInput.files.length > 0) {
+                const fileSize = fileInput.files[0].size / 1024 / 1024; // in MB
+                if (fileSize > 5) {
+                    isValid = false;
+                    fileInput.style.borderColor = 'red';
+                } else {
+                    fileInput.style.borderColor = '#ccc';
+                }
+            }
+        }
+    });
+    return isValid;
+}
+
+function getSurveyData(formElement) {
+    const surveyData = {
+        title: formElement.querySelector('#survey-title').value,
+        description: formElement.querySelector('#survey-description').value,
+        questions: []
+    };
+
+    const questions = formElement.querySelectorAll('.question-container');
+    questions.forEach(question => {
+        const questionData = {
+            title: question.querySelector('.question-title').value,
+            type: question.querySelector('.question-type').value,
+            options: [],
+            notes: question.querySelector('.notes-input') ? question.querySelector('.notes-input').value : ''
+        };
+
+        const options = question.querySelectorAll('.answer-container textarea');
+        options.forEach(option => {
+            questionData.options.push(option.value);
+        });
+
+        surveyData.questions.push(questionData);
+    });
+
+    console.log(surveyData);
+
+    return surveyData;
 }
 
 export function getData() {
