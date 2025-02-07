@@ -88,8 +88,7 @@ form div input[type="text"],
 form div input[type="email"],
 form div input[type="date"],
 form div input[type="tel"],
-form div input[type="password"],
-textarea {
+form div input[type="password"]{
     margin: 0.5rem 0;
     height: 2.5rem;
     width: 100%;

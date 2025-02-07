@@ -34,8 +34,7 @@ body {
     padding: 0;
     display: flex;
     justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+    align-items: flex-start;
 }
 
 .main-container {
@@ -43,15 +42,43 @@ body {
     padding: 1.2rem;
     border-radius: 0.8rem;
     box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
-    width: 70%;
-    margin: 1.2rem auto;
+    width: 100%;
+    margin: 0 auto;
 }
 
-.survey-header, .survey-footer {
+.survey-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    padding: 1.2rem;
+    align-items: center;
+}
+
+.survey-container button {
+    width: 50%;
+}
+
+.survey-header {
     display: flex;
     flex-direction: column;
     gap: 0.6rem;
     margin-bottom: 1.2rem;
+}
+
+.survey-footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.survey-header textarea {
+    width: 100%;
+}
+
+#survey-title {
+    font-size: 1.6rem;
+    font-weight: bold;
 }
 
 .survey-body {
@@ -95,6 +122,8 @@ button:hover {
 }
 
 .question-container {
+    width: 80%;
+    margin: auto;
     padding: 0.5rem;
     border: 0.1rem solid #ddd;
     border-radius: 0.4rem;
@@ -104,9 +133,9 @@ button:hover {
 
 .question-header {
     display: flex;
+    align-items: fle;
     flex-direction: row;
-    gap: 0.6rem;
-    margin-bottom: 0.6rem;
+    gap: 0.5rem;
 }
 
 .extra-notes-container, .answer-notes-container {
@@ -122,17 +151,33 @@ button:hover {
     height: 15px;
 }
 
-.question-title, .question-type, .answer-box, .answer-numeric, .file-answer {
+.question-title {
     width: 100%;
     padding: 0.4rem;
     margin-bottom: 0.5rem;
     border: 0.1rem solid #ccc;
     border-radius: 0.4rem;
     font-size: 1rem;
+    font-size: 1.1rem; 
+    flex: 70%;   
 }
 
-.answer-box {
-    height: 50px;
+.question-type {
+    width: 100%;
+    height: max-content;
+    flex: 30%;
+    border: 0.1rem solid #ccc;
+    border-radius: 0.4rem;
+    font-size: 1rem;
+}
+
+.answer-box, .answer-numeric, .file-answer {
+    width: 100%;
+    padding: 0.4rem;
+    margin-bottom: 0.5rem;
+    border: 0.1rem solid #ccc;
+    border-radius: 0.4rem;
+    font-size: 1rem;
 }
 
 .scq-answer-container, .mcq-answer-container, .file-answer-container, .text-answer-container, .numeric-answer-container {
@@ -206,4 +251,24 @@ button:hover {
     width: 70px;
     align-self: flex-start;
     margin-top: 0.5rem;
+}
+
+.password-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-container input {
+    flex: 1;
+}
+
+.toggle-password-visibility {
+    position: absolute;
+    right: 1px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    width: fit-content;
 }

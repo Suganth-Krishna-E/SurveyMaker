@@ -6,10 +6,10 @@ const fileQuestion = (id) => ({
             tag: 'div',
             attributes: { class: 'file-input-notes-container dis-fl align-start' },
             subTags: [
-                { tag: 'input', attributes: { type: 'file', class: 'file-answer', style: 'flex: 70%' } },
+                { tag: 'input', attributes: { type: 'file', class: 'file-answer' } },
                 {
                     tag: 'select',
-                    attributes: { style: 'flex: 30%' },
+                    attributes: { class: 'file-type-select' },
                     subTags: [
                         { tag: 'option', attributes: { value: 'pdf' }, valueInsideTag: 'PDF' },
                         { tag: 'option', attributes: { value: 'doc' }, valueInsideTag: 'DOC' },
@@ -21,7 +21,7 @@ const fileQuestion = (id) => ({
                         { tag: 'option', attributes: { value: 'csv' }, valueInsideTag: 'CSV' }
                     ]
                 },
-                { tag: 'textarea', attributes: { class: 'notes-input', id: `notes-${id}`, placeholder: 'Notes', style: 'flex: 30%; height: 2.5rem; resize: none; overflow: hidden; height: auto; min-height: 10px;' } }
+                { tag: 'textarea', attributes: { class: 'notes-input', id: `notes-${id}`, placeholder: 'Notes' } }
             ]
         }
     ]

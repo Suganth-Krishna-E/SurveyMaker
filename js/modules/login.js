@@ -60,18 +60,43 @@ const loginFormInput = {
                                     valueInsideTag: 'Password'
                                 },
                                 {
-                                    tag: 'input',
+                                    tag: 'div',
                                     attributes: {
-                                        type: 'password',
-                                        id: 'login-password',
-                                        name: 'password',
-                                        placeholder: 'Enter your password',
-                                        required: true
+                                        class: 'password-container'
                                     },
-                                    validations: {
-                                        validationName: 'password',
-                                        errorMessage: 'Password must be at least 8 characters long'
-                                    }
+                                    subTags: [
+                                        {
+                                            tag: 'input',
+                                            attributes: {
+                                                type: 'password',
+                                                id: 'login-password',
+                                                name: 'password',
+                                                placeholder: 'Enter your password',
+                                                required: true
+                                            },
+                                            validations: {
+                                                validationName: 'password',
+                                                errorMessage: 'Password must be at least 8 characters long'
+                                            }
+                                        },
+                                        {
+                                            tag: 'button',
+                                            attributes: {
+                                                type: 'button',
+                                                id: 'toggle-password-visibility',
+                                                class: 'toggle-password-visibility'
+                                            },
+                                            valueInsideTag: '👁️'
+                                        }
+                                    ]
+                                },
+                                {
+                                    tag: 'div',
+                                    attributes: {
+                                        id: 'caps-lock-warning',
+                                        style: 'display: none; color: red;'
+                                    },
+                                    valueInsideTag: 'Caps Lock is on!'
                                 }
                             ]
                         },
@@ -104,12 +129,15 @@ let returnElement;
 function getData() {
     returnElement = codeMaker.convertIntoHtml(loginFormInput);
     attachValidationHandlers();
+    attachCapsLockWarning();
+    attachPasswordVisibilityToggle();
     return returnElement;
 }
 
 const validationsOfElements = {
     'login-username': (event) => {
         const value = event.target.value;
+        console.log(value);
         event.target.style.border = validateAlphanumeric(value) ? '2px solid black' : '2px solid red';
     },
     'login-password': (event) => {
@@ -149,13 +177,90 @@ function attachValidationHandlers() {
     }
 }
 
-// Validation Helpers
+function attachCapsLockWarning() {
+    const passwordInput = returnElement.querySelector('#login-password');
+    const capsLockWarning = returnElement.querySelector('#caps-lock-warning');
+
+    passwordInput.addEventListener('keyup', (event) => {
+        if (event.getModifierState('CapsLock')) {
+            capsLockWarning.style.display = 'block';
+        } else {
+            capsLockWarning.style.display = 'none';
+        }
+    });
+}
+
+function attachPasswordVisibilityToggle() {
+    const passwordInput = returnElement.querySelector('#login-password');
+    const toggleButton = returnElement.querySelector('#toggle-password-visibility');
+
+    toggleButton.addEventListener('click', () => {
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleButton.textContent = '🙈';
+        } else {
+            passwordInput.type = 'password';
+            toggleButton.textContent = '👁️';
+        }
+    });
+}
+
 function validateAlphanumeric(value) {
+    const length = value.length;
+    if(length < 1 || length > 20) {
+        return false;
+    }
+    for(let index in value) {
+        index = parseInt(index);
+        if(checkIsCapitalAlphabet(value.charAt(index))) {
+            if(index === 0) {
+                continue;
+            }
+            else if(value.charAt(index - 1) === ' ') {
+                continue;
+            }
+            else {
+                return false;
+            }
+        }
+        else if(checkIsSmallAlphabet(value.charAt(index))) {
+            continue;
+        }
+        else if(checkIsSpace(value.charAt(index))) {
+            if(index === 0) {
+                return false;
+            }
+            else if(index + 1 === value.length) {
+                return false;
+            }
+            else if(value.charAt(index - 1) === ' ' || value.charAt(index + 1) === ' ') {
+                return false;
+            }
+            else {
+                continue;
+            }
+        }
+        else {
+            return false;
+        }
+    }
     return true;
 }
 
+function checkIsCapitalAlphabet(character) {
+    return character >= 'A' && character <= 'Z';
+}
+
+function checkIsSmallAlphabet(character) {
+    return character >= 'a' && character <= 'z';
+}
+
+function checkIsSpace(character) {
+    return character === ' ';
+}
+
 function validatePassword(value) {
-    return value.length >= 8; // Add more rules if necessary
+    return value.length >= 8; 
 }
 
 export { getData };

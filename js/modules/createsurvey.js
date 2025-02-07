@@ -10,11 +10,11 @@ const createSurveyForm = {
             tag: 'div',
             attributes: { class: 'survey-header' },
             subTags: [
-                { tag: 'textarea', attributes: { id: 'survey-title', placeholder: 'Survey Title', style: 'width: 70%; resize: none; overflow: hidden; height: auto; min-height: 10px;' } },
-                { tag: 'textarea', attributes: { id: 'survey-description', placeholder: 'Survey Description', style: 'width: 70%; resize: none; overflow: hidden; height: auto; min-height: 10px;' } }
+                { tag: 'textarea', attributes: { id: 'survey-title', placeholder: 'Survey Title' } },
+                { tag: 'textarea', attributes: { id: 'survey-description', placeholder: 'Survey Description' } }
             ]
         },
-        { tag: 'div', attributes: { class: 'survey-body', id: 'questions-container', style: 'margin-top: 1rem;' } },
+        { tag: 'div', attributes: { class: 'survey-body', id: 'questions-container' } },
         {
             tag: 'div',
             attributes: { class: 'survey-footer dis-fl space-between' },
@@ -34,10 +34,10 @@ const questionTemplate = (id) => ({
             tag: 'div',
             attributes: { class: 'question-header dis-fl' },
             subTags: [
-                { tag: 'textarea', attributes: { id: `question-title-${id}`, class: 'question-title', placeholder: 'Question Title', style: 'flex: 70%; resize: none; overflow: hidden; height: auto; min-height: 10px;' } },
+                { tag: 'textarea', attributes: { id: `question-title-${id}`, class: 'question-title', placeholder: 'Question Title' } },
                 {
                     tag: 'select',
-                    attributes: { id: `question-type-${id}`, class: 'question-type', style: 'flex: 30%' },
+                    attributes: { id: `question-type-${id}`, class: 'question-type' },
                     subTags: [
                         { tag: 'option', attributes: { value: 'text', selected: true }, valueInsideTag: 'Text' },
                         { tag: 'option', attributes: { value: 'scq' }, valueInsideTag: 'Single Choice Question' },
@@ -55,19 +55,21 @@ const questionTemplate = (id) => ({
         },
         {
             tag: 'div',
-            attributes: { class: 'button-container dis-fl', style: 'justify-content: flex-end;' },
+            attributes: { class: 'button-container dis-fl' },
             subTags: [
-                { tag: 'button', attributes: { type: 'button', class: 'delete-question', id: `delete-question-${id}`, style: 'width: 150px;' }, valueInsideTag: '❌ Delete' },
-                { tag: 'button', attributes: { type: 'button', class: 'copy-question', id: `copy-question-${id}`, style: 'width: 150px;' }, valueInsideTag: '📋 Copy' }
+                { tag: 'button', attributes: { type: 'button', class: 'delete-question', id: `delete-question-${id}` }, valueInsideTag: '❌ Delete' },
+                { tag: 'button', attributes: { type: 'button', class: 'copy-question', id: `copy-question-${id}` }, valueInsideTag: '📋 Copy' }
             ]
         }
     ]
 });
 
 function attachEventHandlers(formElement) {
+
     const questionsContainer = formElement.querySelector('#questions-container');
     formElement.querySelector('#add-question').addEventListener('click', () => {
         addNewQuestion(questionsContainer);
+        addTextAreaHandlers(questionsContainer);
     });
 
     formElement.querySelector('#submit-survey').addEventListener('click', (event) => {
@@ -81,9 +83,14 @@ function attachEventHandlers(formElement) {
         }
     });
 
-    const textAreas = formElement.querySelectorAll('textarea');
+    addTextAreaHandlers(formElement)
+}
+
+function addTextAreaHandlers(container) {
+    const textAreas = container.querySelectorAll('textarea');
     textAreas.forEach(textArea => {
         textArea.addEventListener('input', function() {
+            console.log(this.scrollHeight);
             this.style.height = "auto";
             this.style.height = this.scrollHeight + "px";
         });
@@ -148,7 +155,19 @@ async function updateAnswerInput(type, container, id) {
     if (type === 'scq' || type === 'mcq') {
         addOptionHandlers(container, id, type);
     }
+    addTextAreaAnswerHandlers(answerElement);
 }
+
+function addTextAreaAnswerHandlers(container) {
+    const textAreas = container.querySelectorAll('textarea');
+    textAreas.forEach(textArea => {
+        textArea.addEventListener('input', function() {
+            this.style.height = "auto";
+            this.style.height = this.scrollHeight + "px";
+        });
+    });
+}
+
 
 function addOptionHandlers(container, id, type) {
     const addOptionButton = container.querySelector(`#${type}-option-adder-${id}`);
@@ -157,7 +176,7 @@ function addOptionHandlers(container, id, type) {
         optionInput.className = `${type}-option-container dis-fl`;
         optionInput.innerHTML = `
             <input type="${type === 'scq' ? 'radio' : 'checkbox'}" class="${type}-choice" name="${type === 'scq' ? `scq-group-${id}` : ''}" disabled>
-            <textarea class="${type}-option-input" placeholder="Option ${container.querySelectorAll(`.${type}-choice`).length + 1}" style="width: 70%; resize: none; overflow: hidden; height: auto; min-height: 10px;"></textarea>
+            <textarea class="${type}-option-input" placeholder="Option ${container.querySelectorAll(`.${type}-choice`).length + 1}"></textarea>
         `;
         addOptionButton.parentNode.insertBefore(optionInput, addOptionButton);
         optionInput.querySelector('textarea').addEventListener('input', function() {
