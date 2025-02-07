@@ -6,7 +6,7 @@ const numericQuestion = (id) => ({
             tag: 'div',
             attributes: { class: 'answer-notes-container dis-fl space-evenly align-start' },
             subTags: [
-                { tag: 'input', attributes: { type: 'number', class: 'answer-numeric', placeholder: 'Answer' } },
+                { tag: 'input', attributes: { type: 'number', class: 'answer-numeric', placeholder: 'Answer', disabled: true } },
                 { tag: 'textarea', attributes: { class: 'notes-input', id: `notes-${id}`, placeholder: 'Notes' } }
             ]
         }

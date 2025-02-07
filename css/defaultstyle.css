@@ -59,6 +59,8 @@ body {
 }
 
 .survey-header {
+    width: 67%;
+    margin: auto;
     display: flex;
     flex-direction: column;
     gap: 0.6rem;
@@ -73,12 +75,16 @@ body {
 }
 
 .survey-header textarea {
-    width: 100%;
+    margin: auto;
 }
 
 #survey-title {
     font-size: 1.6rem;
     font-weight: bold;
+}
+
+#survey-description {
+    font-size: 1.2rem;
 }
 
 .survey-body {
@@ -99,12 +105,17 @@ input[type="text"], textarea, select, input[type="number"] {
 textarea {
     resize: none;
     overflow: hidden;
-    height: auto;
+    height: min-content;
     min-height: 10px;
 }
 
 textarea:focus {
     height: auto;
+}
+
+.button-container {
+    display: flex;
+    justify-content: flex-end;
 }
 
 button {
@@ -122,7 +133,7 @@ button:hover {
 }
 
 .question-container {
-    width: 80%;
+    width: 60%;
     margin: auto;
     padding: 0.5rem;
     border: 0.1rem solid #ddd;
@@ -140,6 +151,7 @@ button:hover {
 
 .extra-notes-container, .answer-notes-container {
     display: flex;
+    flex: 30%;
     flex-direction: row;
     justify-content: space-evenly;
     gap: 0.5rem;
@@ -178,19 +190,37 @@ button:hover {
     border: 0.1rem solid #ccc;
     border-radius: 0.4rem;
     font-size: 1rem;
+    flex: 70%;
+}
+
+.notes-input {
+    flex: 30%
 }
 
 .scq-answer-container, .mcq-answer-container, .file-answer-container, .text-answer-container, .numeric-answer-container {
     display: flex;
-    flex-direction: column;
     margin-bottom: 0.5rem;
+    gap: 1rem;
 }
+
+.scq-option {
+    height: auto;
+}
+
 
 .scq-option-container, .mcq-option-container {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    flex: 70%;
+    align-items: flex-start;
+    justify-content: flex-start;
     gap: 0.3rem;
     margin-bottom: 0.3rem;
+}
+
+.scq-option-container button, .mcq-option-container button {
+    width: 100px;
+    margin-left: 1.1rem;
 }
 
 .scq-choice, .mcq-choice {
@@ -203,13 +233,33 @@ input[type="file"] {
     margin-bottom: 0.5rem;
     border: 0.1rem solid #ccc;
     border-radius: 0.4rem;
-    display: hidden;
+    font-size: 1.2rem;
+    overflow: hidden;
+}
+
+.file-input-wrapper {
+    flex: 70%;
+    display: flex;
+    flex-direction: column;
+}
+
+.file-type-container {
+    display: flex;
+    gap: 1rem;
 }
 
 .file-input-container {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.3rem;
+    flex: 70%;
+    gap: 1rem;
+}
+
+.file-input-container input {
+    flex: 70%
+}
+
+.file-input-container select {
+    flex: 30%
 }
 
 button {
