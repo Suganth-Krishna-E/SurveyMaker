@@ -7,6 +7,7 @@ const routingTitleLocationModulesMap = {
     'login': './modules/login.js',
     'home': './modules/home.js',
     'createsurvey': './modules/createsurvey.js',
+    'surveySubmit': './modules/surveysubmit.js'
 }
 
 
@@ -90,6 +91,8 @@ const listOfUserDetails = [
 const userCustomerIdList = [];
 userCustomerIdList.push('cus_001');
 
+let currentLoggedUser;
+
 function addNewUser(data) {
     console.log(listOfUserDetails);
     if(validateNewUserInsertion(data)) {
@@ -132,8 +135,15 @@ function loginToSite(username, password) {
 }
 
 function loadHomePageAfterLogin(username) {
+    currentLoggedUser = username;
     loadLoginNavBar(username);
     loadModule('home');
+}
+
+function loadSurveySubmitPage(surveyId, surveyTitle) {
+    loadLoginNavBar(currentLoggedUser);
+    history.pushState({ page: 'surveySubmit' }, null, `surveySubmit?surveyId=${surveyId}&surveyTitle=${encodeURIComponent(surveyTitle)}`);
+    loadModule('surveySubmit');
 }
 
 async function loadLoginNavBar(username) {
@@ -144,4 +154,4 @@ async function loadLoginNavBar(username) {
     mainContainer.replaceChildren(loginNavBarElement);
 }
 
-export default { checkIsUserAvailable, addNewUser, loadModule, loginToSite, loadHomePageAfterLogin };
+export default { checkIsUserAvailable, addNewUser, loadModule, loginToSite, loadHomePageAfterLogin, loadSurveySubmitPage };

@@ -1,4 +1,5 @@
 import codeMaker from "../utils/codemaker.js";
+import { loadSurveySubmitPage } from "./index-script.js";
 
 let questionCount = 1;
 
@@ -135,16 +136,35 @@ function attachEventHandlers(formElement) {
 
   formElement
     .querySelector("#submit-survey")
-    .addEventListener("click", (event) => {
+    .addEventListener("click", async (event) => {
       event.preventDefault();
       if (validateSurvey(formElement)) {
         const surveyData = getSurveyData(formElement);
         console.log(JSON.stringify(surveyData, null, 2));
-        swal(
-          "Survey Published",
-          "Your survey has been published successfully!",
-          "success"
-        );
+        try {
+          const response = await fetch("http://localhost:8080/publish", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(surveyData),
+          });
+          const result = await response.json();
+          console.log(result);
+          swal(
+            "Survey Published",
+            "Your survey has been published successfully!",
+            "success"
+          );
+          loadSurveySubmitPage(result.id, result.title);
+        } catch (error) {
+          console.error("Error publishing survey:", error);
+          swal(
+            "Error",
+            "There was an error publishing your survey. Please try again.",
+            "error"
+          );
+        }
       } else {
         swal(
           "Incomplete Survey",
