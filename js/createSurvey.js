@@ -1,91 +1,421 @@
-import surveyFillingModule from './questionTypes/surveyFillingModule.js';
+import codeMaker from "../utils/codemaker.js";
 
-// ...existing code...
+let questionCount = 1;
 
-const validateSurveyData = (surveyData) => {
-    const title = document.querySelector('#survey-title').value;
-    const description = document.querySelector('#survey-description').value;
-
-    if (!title || !description) {
-        alert('Survey title and description cannot be empty.');
-        return false;
-    }
-
-    if (surveyData.length === 0) {
-        alert('There must be at least one question in the survey.');
-        return false;
-    }
-
-    return surveyData.every(question => {
-        if (question.type === 'mcq' || question.type === 'scq') {
-            return question.options && question.options.length > 0;
-        }
-        if (question.type === 'file') {
-            return question.fileType && question.fileType.length > 0;
-        }
-        return true;
-    });
+const createSurveyForm = {
+  tag: "div",
+  attributes: { class: "main-container" },
+  subTags: [
+    {
+      tag: "div",
+      attributes: { class: "survey-header" },
+      subTags: [
+        {
+          tag: "textarea",
+          attributes: { id: "survey-title", placeholder: "Survey Title" },
+        },
+        {
+          tag: "textarea",
+          attributes: {
+            id: "survey-description",
+            placeholder: "Survey Description",
+          },
+        },
+      ],
+    },
+    {
+      tag: "div",
+      attributes: { class: "survey-body", id: "questions-container" },
+    },
+    {
+      tag: "div",
+      attributes: { class: "survey-footer dis-fl space-between" },
+      subTags: [
+        {
+          tag: "button",
+          attributes: { type: "button", id: "add-question" },
+          valueInsideTag: "Add Question",
+        },
+        {
+          tag: "button",
+          attributes: { type: "submit", id: "submit-survey" },
+          valueInsideTag: "Publish Survey",
+        },
+      ],
+    },
+  ],
 };
 
-const addPreviewButton = () => {
-    const previewButton = document.createElement('button');
-    previewButton.innerText = 'Preview Survey';
-    previewButton.onclick = () => {
-        const surveyData = getSurveyData(); // Assume this function collects the survey data in JSON format
-        if (validateSurveyData(surveyData)) {
-            const surveyForm = surveyFillingModule(surveyData);
-            const newWindow = window.open();
-            newWindow.document.write('<html><head><title>Survey Preview</title></head><body></body></html>');
-            newWindow.document.body.appendChild(surveyForm);
-        } else {
-            alert('MCQ and SCQ questions must have at least one option and file questions must have a file type selected.');
+const questionTemplate = (id) => ({
+  tag: "div",
+  attributes: { class: "question-container", id: `question-container-${id}` },
+  subTags: [
+    {
+      tag: "div",
+      attributes: { class: "question-header dis-fl" },
+      subTags: [
+        {
+          tag: "textarea",
+          attributes: {
+            id: `question-title-${id}`,
+            class: "question-title",
+            placeholder: "Question Title",
+          },
+        },
+        {
+          tag: "select",
+          attributes: { id: `question-type-${id}`, class: "question-type" },
+          subTags: [
+            {
+              tag: "option",
+              attributes: { value: "text", selected: true },
+              valueInsideTag: "Text",
+            },
+            {
+              tag: "option",
+              attributes: { value: "scq" },
+              valueInsideTag: "Single Choice Question",
+            },
+            {
+              tag: "option",
+              attributes: { value: "mcq" },
+              valueInsideTag: "Multiple Choice Question",
+            },
+            {
+              tag: "option",
+              attributes: { value: "numeric" },
+              valueInsideTag: "Numeric",
+            },
+            {
+              tag: "option",
+              attributes: { value: "file" },
+              valueInsideTag: "File",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      tag: "div",
+      attributes: { class: "answer-container", id: `answer-container-${id}` },
+    },
+    {
+      tag: "div",
+      attributes: { class: "button-container dis-fl" },
+      subTags: [
+        {
+          tag: "button",
+          attributes: {
+            type: "button",
+            class: "delete-question",
+            id: `delete-question-${id}`,
+          },
+          valueInsideTag: "✗ Delete",
+        },
+        {
+          tag: "button",
+          attributes: {
+            type: "button",
+            class: "copy-question",
+            id: `copy-question-${id}`,
+          },
+          valueInsideTag: "📋 Copy",
+        },
+      ],
+    },
+  ],
+});
+
+function attachEventHandlers(formElement) {
+  const questionsContainer = formElement.querySelector("#questions-container");
+  formElement.querySelector("#add-question").addEventListener("click", () => {
+    addNewQuestion(questionsContainer);
+    addTextAreaHandlers(questionsContainer);
+  });
+
+  formElement
+    .querySelector("#submit-survey")
+    .addEventListener("click", (event) => {
+      event.preventDefault();
+      if (validateSurvey(formElement)) {
+        const surveyData = getSurveyData(formElement);
+        console.log(JSON.stringify(surveyData, null, 2));
+        swal(
+          "Survey Published",
+          "Your survey has been published successfully!",
+          "success"
+        );
+      } else {
+        swal(
+          "Incomplete Survey",
+          "Please fill out all required fields.",
+          "warning"
+        );
+      }
+    });
+
+  addTextAreaHandlers(formElement);
+}
+
+function addTextAreaHandlers(container) {
+  const textAreas = container.querySelectorAll("textarea");
+  textAreas.forEach((textArea) => {
+    textArea.addEventListener("input", function () {
+      this.style.height = "auto";
+      this.style.height = this.scrollHeight + "px";
+    });
+  });
+}
+
+async function addNewQuestion(container) {
+  const newQuestion = codeMaker.convertIntoHtml(
+    questionTemplate(questionCount)
+  );
+  container.appendChild(newQuestion);
+  await addQuestionHandlers(newQuestion, questionCount);
+  questionCount++;
+}
+
+async function addQuestionHandlers(questionElement, id) {
+  const questionTypeSelect = questionElement.querySelector(
+    `#question-type-${id}`
+  );
+  const answerContainer = questionElement.querySelector(
+    `#answer-container-${id}`
+  );
+  questionTypeSelect.addEventListener("change", async () => {
+    await updateAnswerInput(questionTypeSelect.value, answerContainer, id);
+  });
+  questionElement
+    .querySelector(`#delete-question-${id}`)
+    .addEventListener("click", () => {
+      swal({
+        title: "Are you sure?",
+        text: "Do you want to delete this question?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      }).then((willDelete) => {
+        if (willDelete) {
+          questionElement.remove();
         }
+      });
+    });
+  questionElement
+    .querySelector(`#copy-question-${id}`)
+    .addEventListener("click", () => {
+      copyQuestion(questionElement);
+    });
+  await updateAnswerInput("text", answerContainer, id); // Set default type to 'text'
+}
+
+async function updateAnswerInput(type, container, id) {
+  container.innerHTML = "";
+  let inputElement;
+  switch (type) {
+    case "text":
+      inputElement = await import("../questionTypes/text.js");
+      break;
+    case "scq":
+      inputElement = await import("../questionTypes/scq.js");
+      break;
+    case "mcq":
+      inputElement = await import("../questionTypes/mcq.js");
+      break;
+    case "numeric":
+      inputElement = await import("../questionTypes/numeric.js");
+      break;
+    case "file":
+      inputElement = await import("../questionTypes/file.js");
+      break;
+  }
+  const answerElement = codeMaker.convertIntoHtml(inputElement.default(id));
+  container.appendChild(answerElement);
+  if (type === "scq" || type === "mcq") {
+    addOptionHandlers(container, id, type);
+  }
+  addTextAreaAnswerHandlers(answerElement);
+}
+
+function addTextAreaAnswerHandlers(container) {
+  const textAreas = container.querySelectorAll("textarea");
+  textAreas.forEach((textArea) => {
+    textArea.addEventListener("input", function () {
+      this.style.height = "auto";
+      this.style.height = this.scrollHeight + "px";
+    });
+  });
+}
+
+function addOptionHandlers(container, id, type) {
+  const addOptionButton = container.querySelector(
+    `#${type}-option-adder-${id}`
+  );
+  addOptionButton.addEventListener("click", () => {
+    const optionInput = document.createElement("div");
+    optionInput.className = `${type}-option dis-fl`;
+    optionInput.innerHTML = `
+            <textarea class="${type}-option-input" placeholder="Option ${
+      container.querySelectorAll(`.${type}-option-input`).length + 1
+    }"></textarea>
+            <button type="button" class="remove-option-btn">Remove</button>
+        `;
+    addOptionButton.parentNode.insertBefore(optionInput, addOptionButton);
+    optionInput
+      .querySelector("textarea")
+      .addEventListener("input", function () {
+        this.style.height = "auto";
+        this.style.height = this.scrollHeight + "px";
+      });
+    optionInput
+      .querySelector(".remove-option-btn")
+      .addEventListener("click", () => {
+        optionInput.remove();
+      });
+  });
+}
+
+function copyQuestion(questionElement) {
+  const clonedQuestion = questionElement.cloneNode(true);
+  const questionsContainer = document.querySelector("#questions-container");
+  questionsContainer.appendChild(clonedQuestion);
+  const newId = questionCount++;
+  clonedQuestion.id = `question-container-${newId}`;
+  clonedQuestion.querySelector(
+    ".question-title"
+  ).id = `question-title-${newId}`;
+  clonedQuestion.querySelector(".question-type").id = `question-type-${newId}`;
+  clonedQuestion.querySelector(
+    ".answer-container"
+  ).id = `answer-container-${newId}`;
+  clonedQuestion.querySelector(
+    ".delete-question"
+  ).id = `delete-question-${newId}`;
+  clonedQuestion.querySelector(".copy-question").id = `copy-question-${newId}`;
+  addQuestionHandlers(clonedQuestion, newId);
+}
+
+function validateSurvey(formElement) {
+  const questions = formElement.querySelectorAll(".question-container");
+
+  if (questions.length === 0) {
+    return false;
+  }
+
+  let isValid = true;
+  const options = document.querySelectorAll("textarea");
+  options.forEach((option) => {
+    if (
+      option.getAttribute("class") !== "notes-input" &&
+      option.getAttribute("disabled") !== "true"
+    ) {
+      if (!option.value.trim()) {
+        isValid = false;
+        option.style.borderColor = "red";
+      } else {
+        option.style.borderColor = "#ccc";
+      }
+    }
+  });
+
+  const optionsForMCQ = document.querySelectorAll(".mcq-option-container");
+  const optionsForSCQ = document.querySelectorAll(".scq-option-container");
+
+  if (optionsForMCQ.length > 0) {
+    optionsForMCQ.forEach((option) => {
+      if (option.querySelectorAll("textarea").length < 1) {
+        isValid = false;
+        option.style.borderColor = "red";
+      } else {
+        option.style.borderColor = "#ccc";
+      }
+    });
+  }
+
+  if (optionsForSCQ.length > 0) {
+    optionsForSCQ.forEach((option) => {
+      if (option.querySelectorAll("textarea").length < 2) {
+        isValid = false;
+        option.style.borderColor = "red";
+      } else {
+        option.style.borderColor = "#ccc";
+      }
+    });
+  }
+
+  options.forEach((option) => {
+    option.addEventListener("blur", () => {
+      if (option.value.trim()) {
+        option.style.borderColor = "#ccc";
+      }
+    });
+  });
+
+  questions.forEach((question) => {
+    const questionTitle = question.querySelector(".question-title");
+    if (!questionTitle.value.trim()) {
+      isValid = false;
+      questionTitle.style.borderColor = "red";
+    } else {
+      questionTitle.style.borderColor = "#ccc";
+    }
+    const answerContainer = question.querySelector(".answer-container");
+    const options = answerContainer.querySelectorAll("textarea");
+    options.forEach((option) => {
+      if (
+        option.getAttribute("class") !== "notes-input" &&
+        option.getAttribute("disabled") !== "true"
+      ) {
+        if (!option.value.trim()) {
+          isValid = false;
+          option.style.borderColor = "red";
+        } else {
+          option.style.borderColor = "#ccc";
+        }
+      }
+    });
+  });
+  return isValid;
+}
+
+function getSurveyData(formElement) {
+  const surveyData = {
+    title: formElement.querySelector("#survey-title").value,
+    description: formElement.querySelector("#survey-description").value,
+    questions: [],
+  };
+
+  const questions = formElement.querySelectorAll(".question-container");
+  questions.forEach((question) => {
+    const questionData = {
+      title: question.querySelector(".question-title").value,
+      type: question.querySelector(".question-type").value,
+      options: [],
+      notes: question.querySelector(".notes-input")
+        ? question.querySelector(".notes-input").value
+        : "",
     };
-    document.body.appendChild(previewButton);
-};
 
-const validateOnSubmit = () => {
-    const form = document.querySelector('.survey-form-container');
-    form.addEventListener('submit', (event) => {
-        const inputs = form.querySelectorAll('input[required]');
-        let isValid = true;
-        inputs.forEach(input => {
-            if (!input.value) {
-                isValid = false;
-                input.classList.add('error');
-                input.style.borderColor = 'red';
-            } else {
-                input.classList.remove('error');
-                input.style.borderColor = ''; // Reset to normal border color
-            }
-        });
+    const options = question.querySelectorAll(`${question.querySelector(".question-type").value}.answer-container textarea`);
+    
+    console.log(options);
 
-        const surveyData = getSurveyData(); // Assume this function collects the survey data in JSON format
-        if (surveyData.length === 0) {
-            isValid = false;
-            alert('There must be at least one question in the survey.');
-        }
-
-        if (!isValid) {
-            event.preventDefault();
-            alert('Please fill all required fields.');
-        } else {
-            alert('Survey has been published successfully.');
-        }
+    options.forEach((option) => {
+      questionData.options.push(option.value);
     });
-};
 
-// Change the submit button to publish button
-const changeSubmitButtonToPublish = () => {
-    const submitButton = document.querySelector('button[type="submit"]');
-    if (submitButton) {
-        submitButton.innerText = 'Publish Survey';
-    }
-};
+    surveyData.questions.push(questionData);
+  });
 
-// Call the functions to add the preview button, validation, and change submit button
-addPreviewButton();
-validateOnSubmit();
-changeSubmitButtonToPublish();
+  console.log(surveyData);
 
-// ...existing code...
+  return surveyData;
+}
+
+export function getData() {
+  const formElement = codeMaker.convertIntoHtml(createSurveyForm);
+  attachEventHandlers(formElement);
+  return formElement;
+}
+
+export default { getData };

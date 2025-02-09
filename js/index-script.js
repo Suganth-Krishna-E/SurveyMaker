@@ -29,9 +29,6 @@ async function loadModule(moduleName) {
         mainContainer.appendChild(moduleData.getData());
         history.pushState({page: moduleName} , null, moduleName);
     }
-    else if(moduleName === 'home') {
-        
-    }
     else {
         loadNavBar();
     }
