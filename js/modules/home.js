@@ -49,7 +49,8 @@ function attachEventHandlers() {
 
     returnElement.querySelector("#view-stats-btn").addEventListener("click", () => {
         console.log("View Stats button clicked");
-        indexScriptModule.loadModule("surveyStats");
+        const adminId = document.getElementById('username-display').innerText;
+        indexScriptModule.loadViewStatsPage(adminId);
     });
 }
 

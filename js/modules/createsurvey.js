@@ -1,4 +1,5 @@
 import codeMaker from "../utils/codemaker.js";
+import indexScriptModule from "../index-script.js";
 
 let questionCount = 1;
 
@@ -135,16 +136,36 @@ function attachEventHandlers(formElement) {
 
   formElement
     .querySelector("#submit-survey")
-    .addEventListener("click", (event) => {
+    .addEventListener("click", async (event) => {
       event.preventDefault();
       if (validateSurvey(formElement)) {
         const surveyData = getSurveyData(formElement);
+        surveyData.adminId = document.getElementById('username-display').innerText;
         console.log(JSON.stringify(surveyData, null, 2));
-        swal(
-          "Survey Published",
-          "Your survey has been published successfully!",
-          "success"
-        );
+        try {
+          const response = await fetch("http://localhost:8080/surveydetails/publish", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(surveyData),
+          });
+          const result = await response.json();
+          console.log(result);
+          swal(
+            "Survey Published",
+            "Your survey has been published successfully!",
+            "success"
+          );
+          indexScriptModule.loadSurveySubmitPage(result.surveyId, result.surveyTitle);
+        } catch (error) {
+          console.error("Error publishing survey:", error);
+          swal(
+            "Error",
+            "There was an error publishing your survey. Please try again.",
+            "error"
+          );
+        }
       } else {
         swal(
           "Incomplete Survey",
@@ -396,7 +417,10 @@ function getSurveyData(formElement) {
         : "",
     };
 
-    const options = question.querySelectorAll(".answer-container textarea");
+    const options = question.querySelectorAll(`${question.querySelector(".question-type").value}.answer-container textarea`);
+    
+    console.log(options);
+
     options.forEach((option) => {
       questionData.options.push(option.value);
     });

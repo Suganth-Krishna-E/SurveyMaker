@@ -7,7 +7,9 @@ const routingTitleLocationModulesMap = {
     'login': './modules/login.js',
     'home': './modules/home.js',
     'createsurvey': './modules/createsurvey.js',
-    'surveySubmit': './modules/surveysubmit.js'
+    'surveySubmit': './modules/surveysubmit.js',
+    'viewStats': './modules/viewstats.js',
+    'fillSurvey': './modules/filleSurvey.js'
 }
 
 
@@ -20,14 +22,14 @@ function loadInitialData() {
 async function loadModule(moduleName) {
     if(moduleName !== 'index') {
         const moduleData = await import(routingTitleLocationModulesMap[moduleName]);
-
         const mainContainerData = document.getElementsByTagName('main');
 
         if(mainContainerData.length !== 0) {
             mainContainer.removeChild(mainContainerData[0]);
         }
     
-        mainContainer.appendChild(moduleData.getData());
+        const container = await moduleData.getData();
+        mainContainer.appendChild(container);
         history.pushState({page: moduleName} , null, moduleName);
     }
     else {
@@ -146,12 +148,17 @@ function loadSurveySubmitPage(surveyId, surveyTitle) {
     loadModule('surveySubmit');
 }
 
+function loadViewStatsPage(adminId) {
+    loadLoginNavBar(currentLoggedUser);
+    history.pushState({ page: 'viewStats' }, null, `viewStats?adminId=${adminId}`);
+    loadModule('viewStats');
+}
+
 async function loadLoginNavBar(username) {
     const loginNavBarModule = await import('./modules/loginnavbar.js');
     loginNavBarModule.loadInitialData(username);
     const loginNavBarElement = loginNavBarModule.getData();
-
     mainContainer.replaceChildren(loginNavBarElement);
 }
 
-export default { checkIsUserAvailable, addNewUser, loadModule, loginToSite, loadHomePageAfterLogin, loadSurveySubmitPage };
+export default { checkIsUserAvailable, addNewUser, loadModule, loginToSite, loadHomePageAfterLogin, loadSurveySubmitPage,loadViewStatsPage };

@@ -1,3 +1,4 @@
+import indexScript from "../index-script.js";
 import codeMaker from "../utils/codemaker.js";
 
 export function getData() {
@@ -32,7 +33,8 @@ export function getData() {
   const container = codeMaker.convertIntoHtml(surveySubmitForm);
 
   container.querySelector("#view-stats").addEventListener("click", () => {
-    // window.location.href = `surveyStats.html?surveyId=${surveyId}`;
+    const adminId = document.getElementById('username-display').innerText;
+    indexScript.loadViewStatsPage(adminId);
   });
 
   return container;
