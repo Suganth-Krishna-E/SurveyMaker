@@ -140,6 +140,9 @@ button:hover {
     border-radius: 0.4rem;
     background: #fafafa;
     margin-bottom: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem
 }
 
 .question-header {
@@ -373,4 +376,28 @@ button:hover {
 
 .survey-submit-container button:hover {
     opacity: 0.8;
+}
+
+.survey-search-box {
+    display: flex;
+    gap: 1rem;
+    justify-content: space-around;
+}
+
+.survey-search-box input {
+    width: 100%;
+}
+
+#survey-questions-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.mcq-answer-option-container,
+.scq-answer-option-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
 }

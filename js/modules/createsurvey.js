@@ -139,11 +139,12 @@ function attachEventHandlers(formElement) {
     .addEventListener("click", async (event) => {
       event.preventDefault();
       if (validateSurvey(formElement)) {
+        questionCount = 1;
         const surveyData = getSurveyData(formElement);
         surveyData.adminId = document.getElementById('username-display').innerText;
-        console.log(JSON.stringify(surveyData, null, 2));
+
         try {
-          const response = await fetch("http://localhost:8080/surveydetails/publish", {
+          const response = await fetch("http://localhost:8080/surveydetail/publish", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -219,6 +220,7 @@ async function addQuestionHandlers(questionElement, id) {
       }).then((willDelete) => {
         if (willDelete) {
           questionElement.remove();
+          questionCount--;
         }
       });
     });
@@ -408,27 +410,29 @@ function getSurveyData(formElement) {
 
   const questions = formElement.querySelectorAll(".question-container");
   questions.forEach((question) => {
-    const questionData = {
+    let questionData = {
+      questionNumber: question.getAttribute("id").split('-')[2],
       title: question.querySelector(".question-title").value,
       type: question.querySelector(".question-type").value,
       options: [],
       notes: question.querySelector(".notes-input")
         ? question.querySelector(".notes-input").value
         : "",
+      fileType: ""
     };
 
-    const options = question.querySelectorAll(`${question.querySelector(".question-type").value}.answer-container textarea`);
-    
-    console.log(options);
+    if(questionData.type === 'file') {
+      questionData.fileType = question.querySelector('.file-type-select').value;
+    }
 
-    options.forEach((option) => {
-      questionData.options.push(option.value);
+    const questionType = question.querySelector(".question-type").value;
+    
+    question.querySelectorAll(`.answer-container .${questionType}-answer-container .${questionType}-option-container .${questionType}-option .${questionType}-option-input`).forEach((optionElement) => {
+      questionData.options.push(optionElement.value);
     });
 
     surveyData.questions.push(questionData);
   });
-
-  console.log(surveyData);
 
   return surveyData;
 }

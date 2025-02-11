@@ -133,10 +133,6 @@ form div button {
     width: 100%;
 }
 
-input[type="radio"] {
-    display: none;
-}
-
 .selector-radio label {
     display: inline-flex;
     align-items: center;

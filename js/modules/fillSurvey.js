@@ -1,132 +1,317 @@
-import codeMaker from '../utils/codemaker.js';
-import indexScriptModule from '../index-script.js';
+import codeMaker from "../utils/codemaker.js";
 
 const surveyFormJson = {
-    tag: "main",
-    subTags: [
+  tag: "main",
+  subTags: [
+    {
+      tag: "div",
+      attributes: { id: "survey-form-container", class: "survey-container" },
+      subTags: [
         {
-            tag: "div",
-            attributes: { id: "survey-form-container", class: "survey-container" },
-            subTags: [
-                {
-                    tag: "input",
-                    attributes: { id: "survey-id-input", type: "text", placeholder: "Enter Survey ID" }
-                },
-                {
-                    tag: "button",
-                    attributes: { id: "load-survey-btn", class: "survey-btn" },
-                    valueInsideTag: "Load Survey"
-                },
-                {
-                    tag: "div",
-                    attributes: { id: "survey-questions-container", class: "survey-body" }
-                }
-            ]
-        }
-    ]
+          tag: "div",
+          attributes: {
+            class: "survey-search-box",
+          },
+          subTags: [
+            {
+              tag: "input",
+              attributes: {
+                id: "survey-id-input",
+                type: "text",
+                placeholder: "Enter Survey ID",
+              },
+            },
+            {
+              tag: "button",
+              attributes: { id: "load-survey-btn", class: "survey-btn" },
+              valueInsideTag: "Load Survey",
+            },
+          ],
+        },
+        {
+          tag: "div",
+          attributes: {
+            id: "survey-questions-container",
+            class: "survey-body",
+          },
+        },
+        {
+          tag: "div",
+          attributes: {
+            id: "survey-submit-container",
+            class: "survey-submit-container",
+          },
+          subTags: [
+            {
+              tag: "button",
+              attributes: { id: "submit-survey-btn", class: "survey-btn" },
+              valueInsideTag: "Submit Survey",
+            },
+          ],
+        },
+      ],
+    },
+  ],
 };
 
 let returnElement;
 
-function getData() {
-    returnElement = codeMaker.convertIntoHtml(surveyFormJson);
-    attachEventHandlers();
-    return returnElement;
+async function getData() {
+  returnElement = codeMaker.convertIntoHtml(surveyFormJson);
+  attachEventHandlers();
+  return returnElement;
 }
 
 function attachEventHandlers() {
-    returnElement.querySelector("#load-survey-btn").addEventListener("click", async () => {
-        const surveyId = document.getElementById("survey-id-input").value;
-        if (surveyId) {
-            const surveyData = await fetchSurveyData(surveyId);
-            if (surveyData) {
-                displaySurveyQuestions(surveyData.questions);
-            } else {
-                alert("Survey not found");
-            }
+  returnElement
+    .querySelector("#load-survey-btn")
+    .addEventListener("click", async () => {
+      const surveyId = document.getElementById("survey-id-input").value;
+      if (surveyId) {
+        const surveyData = await fetchSurveyData(surveyId);
+        if (surveyData) {
+          displaySurveyQuestions(surveyData.questions, surveyData);
         } else {
-            alert("Please enter a survey ID");
+          swal("No survey found", "The given surveyId is not valid", "warning");
         }
+      } else {
+        swal(
+          "No SurveyId Found",
+          "There is no surveyId given in the input",
+          "warning"
+        );
+      }
+    });
+
+  returnElement
+    .querySelector("#submit-survey-btn")
+    .addEventListener("click", async () => {
+      const surveyId = document.getElementById("survey-id-input").value;
+      const userId = document.getElementById("username-display").innerText;
+      const answers = collectResponses();
+      const responsePayload = { surveyId, userId, answers };
+      console.log(responsePayload);
+      const result = await submitSurveyResponse(responsePayload);
+      if (result) {
+        swal("Success", "Survey submitted successfully", "success");
+      } else {
+        swal("Error", "Failed to submit survey", "error");
+      }
     });
 }
 
 async function fetchSurveyData(surveyId) {
-    try {
-        const response = await fetch(`/surveydetails/getSurveyById/${surveyId}`);
-        if (response.ok) {
-            return await response.json();
-        } else {
-            console.error("Failed to fetch survey data");
-            return null;
-        }
-    } catch (error) {
-        console.error("Error fetching survey data:", error);
-        return null;
+  try {
+    const response = await fetch(
+      `http://localhost:8080/surveydetail/getSurveyById/${surveyId}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (response.ok) {
+      return await response.json();
+    } else {
+      console.error("Failed to fetch survey data");
+      return null;
     }
+  } catch (error) {
+    console.error("Error fetching survey data:", error);
+    return null;
+  }
 }
 
-function displaySurveyQuestions(questions) {
-    const questionsContainer = document.getElementById("survey-questions-container");
-    questionsContainer.innerHTML = ""; // Clear previous questions
+function displaySurveyQuestions(questions, surveyData) {
+  const questionsContainer = document.getElementById(
+    "survey-questions-container"
+  );
 
-    questions.forEach(question => {
-        const questionElement = createQuestionElement(question);
-        questionsContainer.appendChild(questionElement);
-    });
+  const surveyTitle = document.createElement("h2");
+
+  const surveyDescription = document.createElement("h4");
+  surveyDescription.innerText = surveyData.title;
+
+  surveyTitle.innerText = surveyData.title;
+  surveyDescription.innerText = surveyData.description;
+
+  questionsContainer.innerHTML = ""; // Clear previous questions
+
+  questionsContainer.appendChild(surveyTitle);
+  questionsContainer.appendChild(surveyDescription);
+
+  questions.forEach((question) => {
+    const questionElement = createQuestionElement(question);
+    questionsContainer.appendChild(questionElement);
+  });
 }
 
 function createQuestionElement(question) {
-    const questionContainer = document.createElement("div");
-    questionContainer.className = "question-container";
+  const questionContainer = document.createElement("div");
+  questionContainer.setAttribute("class", "question-container");
 
-    const questionTitle = document.createElement("div");
-    questionTitle.className = "question-title";
-    questionTitle.innerText = question.title;
-    questionContainer.appendChild(questionTitle);
+  const questionTitle = document.createElement("div");
+  questionTitle.className = "question-title-text";
+  questionTitle.innerText = question.questionNumber + " " + question.title;
+  questionContainer.appendChild(questionTitle);
 
-    if (question.type === "mcq") {
-        question.options.forEach(option => {
-            const optionContainer = document.createElement("div");
-            optionContainer.className = "mcq-option-container";
+  if (question.type === "mcq") {
+    let optionCount = 1;
+    question.options.forEach((option) => {
+      const optionContainer = document.createElement("div");
+      optionContainer.className = "mcq-answer-option-container";
 
-            const optionInput = document.createElement("input");
-            optionInput.type = "checkbox";
-            optionInput.name = question.id;
-            optionInput.value = option;
-            optionContainer.appendChild(optionInput);
+      const optionInput = document.createElement("input");
+      optionInput.type = "checkbox";
+      optionInput.id = `option-${optionCount}`;
+      optionInput.name = `option-${optionCount}`;
+      optionInput.value = option;
+      optionContainer.appendChild(optionInput);
 
-            const optionLabel = document.createElement("label");
-            optionLabel.innerText = option;
-            optionContainer.appendChild(optionLabel);
+      const optionLabel = document.createElement("label");
+      optionLabel.innerText = option;
+      optionLabel.setAttribute("for", optionInput.id);
 
-            questionContainer.appendChild(optionContainer);
-        });
-    } else if (question.type === "scq") {
-        question.options.forEach(option => {
-            const optionContainer = document.createElement("div");
-            optionContainer.className = "scq-option-container";
+      optionContainer.appendChild(optionLabel);
 
-            const optionInput = document.createElement("input");
-            optionInput.type = "radio";
-            optionInput.name = question.id;
-            optionInput.value = option;
-            optionContainer.appendChild(optionInput);
+      questionContainer.appendChild(optionContainer);
+      optionCount++;
+    });
+  } else if (question.type === "scq") {
+    let optionCount = 1;
+    question.options.forEach((option) => {
+      const optionContainer = document.createElement("div");
+      optionContainer.className = "scq-option-answer-container";
 
-            const optionLabel = document.createElement("label");
-            optionLabel.innerText = option;
-            optionContainer.appendChild(optionLabel);
+      const optionInput = document.createElement("input");
+      optionInput.type = "radio";
+      optionInput.id = `option-${optionCount}`;
+      optionInput.name = `option-radio`;
+      optionInput.value = option;
 
-            questionContainer.appendChild(optionContainer);
-        });
-    } else {
-        const answerInput = document.createElement("input");
-        answerInput.type = "text";
-        answerInput.name = question.id;
-        answerInput.className = "answer-box";
-        questionContainer.appendChild(answerInput);
+      const optionLabel = document.createElement("label");
+      optionLabel.innerText = option;
+      optionLabel.setAttribute("for", optionInput.id);
+
+      optionContainer.appendChild(optionInput);
+      optionContainer.appendChild(optionLabel);
+
+      questionContainer.appendChild(optionContainer);
+
+      optionCount++;
+    });
+  } else if (question.type === "numeric") {
+    const answerInput = document.createElement("input");
+    answerInput.type = "number";
+    answerInput.name = question.id;
+    answerInput.className = "answer-box";
+    questionContainer.appendChild(answerInput);
+  } else if (question.type === "file") {
+    const answerInput = document.createElement("input");
+    answerInput.type = "file";
+    answerInput.accept = question.fileType;
+    answerInput.name = question.id;
+    answerInput.className = "answer-box";
+    questionContainer.appendChild(answerInput);
+  } else {
+    const answerInput = document.createElement("input");
+    answerInput.type = "text";
+    answerInput.name = question.id;
+    answerInput.className = "answer-box";
+    questionContainer.appendChild(answerInput);
+  }
+
+  return questionContainer;
+}
+
+function collectResponses() {
+  const responses = [];
+  const questionContainers = document.querySelectorAll(".question-container");
+
+  questionContainers.forEach((container) => {
+    const questionId = container
+      .querySelector(".question-title-text")
+      .innerText.split(" ")[0];
+
+    const inputs = container.querySelectorAll("input");
+
+    const response = {
+      questionId: questionId,
+    };
+
+    console.log(inputs);
+
+    if(inputs.length === 1) {
+        if(inputs[0].type === "text") {
+            response.answerText = inputs[0].value;
+        }
+        else if(inputs[0].type === "number") {
+            response.answerNumber = inputs[0].value;
+        }
+        else if(inputs[0].type === "file") {
+            response.answerFile = inputs[0].value;
+        }
+    }
+    else {
+        const checkedInputs = getSelectedInputs(inputs);
+        if(checkedInputs.length === 1) {
+            response.answerScq = checkedInputs[0];
+        }
+        else {
+            response.answerMcq = checkedInputs;
+        }
     }
 
-    return questionContainer;
+    // if (inputs.length === 1) {
+    //   response.answer = inputs[0].value;
+    // } else {
+    //   inputs.forEach((input) => {
+    //     if (input.checked) {
+    //       if (response.answer) {
+    //         response.answer.push(input.value);
+    //       } else {
+    //         response.answer = [];
+    //         response.answer.push(input.value);
+    //       }
+    //     }
+    //   });
+    // }
+
+    responses.push(response);
+  });
+
+  return responses;
+}
+
+function getSelectedInputs(inputs) {
+    const checkedElements = [];
+    inputs.forEach(input => {
+        if(input.checked) {
+            checkedElements.push(input.value);
+        }
+    });
+
+    return checkedElements;
+}
+
+async function submitSurveyResponse(responsePayload) {
+  try {
+    const response = await fetch(
+      `http://localhost:8080/surveyresponse/submit`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(responsePayload),
+      }
+    );
+    console.log(response);
+    return response.ok;
+  } catch (error) {
+    console.error("Error submitting survey response:", error);
+    return false;
+  }
 }
 
 export { getData };

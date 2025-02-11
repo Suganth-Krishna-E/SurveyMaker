@@ -122,10 +122,6 @@ form div button:hover {
     color: black;
 }
 
-input[type="radio"] {
-    display: none;
-}
-
 .selector-radio label {
     display: inline-flex;
     align-items: center;
@@ -262,6 +258,40 @@ input[type="checkbox"]:checked::before {
 input[type="checkbox"]:hover {
     border-color: #fff;
 }
+
+input[type="radio"] {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    margin: 0 10px;
+    vertical-align: middle;
+    border: 2px solid #000;
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+}
+
+input[type="radio"]:checked {
+    background-color: #000;
+    border-color: #000;
+}
+
+input[type="radio"]:checked::before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+input[type="radio"]:hover {
+    border-color: #fff;
+}
+
 
 .input-fields {
     flex-direction: column;

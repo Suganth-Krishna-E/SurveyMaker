@@ -44,7 +44,7 @@ function attachEventHandlers() {
 
     returnElement.querySelector("#fill-survey-btn").addEventListener("click", () => {
         console.log("Fill Survey button clicked");
-        indexScriptModule.loadModule("fillSurvey");
+        indexScriptModule.loadFillSurveyModule();
     });
 
     returnElement.querySelector("#view-stats-btn").addEventListener("click", () => {

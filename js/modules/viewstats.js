@@ -2,7 +2,7 @@ import codeMaker from "../utils/codemaker.js";
 
 async function fetchSurveyDetails(adminId) {
   const response = await fetch(
-    `http://localhost:8080/surveydetails/${adminId}`,
+    `http://localhost:8080/surveydetail/${adminId}`,
     {
       headers: {
         "Content-Type": "application/json",

@@ -9,7 +9,7 @@ const routingTitleLocationModulesMap = {
     'createsurvey': './modules/createsurvey.js',
     'surveySubmit': './modules/surveysubmit.js',
     'viewStats': './modules/viewstats.js',
-    'fillSurvey': './modules/filleSurvey.js'
+    'fillSurvey': './modules/fillSurvey.js'
 }
 
 
@@ -22,6 +22,7 @@ function loadInitialData() {
 async function loadModule(moduleName) {
     if(moduleName !== 'index') {
         const moduleData = await import(routingTitleLocationModulesMap[moduleName]);
+
         const mainContainerData = document.getElementsByTagName('main');
 
         if(mainContainerData.length !== 0) {
@@ -30,7 +31,6 @@ async function loadModule(moduleName) {
     
         const container = await moduleData.getData();
         mainContainer.appendChild(container);
-        history.pushState({page: moduleName} , null, moduleName);
     }
     else {
         loadNavBar();
@@ -53,8 +53,9 @@ async function loadNavBar() {
     listNavBarElements.forEach((element) => {
         element.addEventListener('click', () => {
             const moduleName = element.getAttribute('id');
-            console.log(moduleName);
+
             loadModule(moduleName);
+            history.pushState({page: moduleName} , null, moduleName);
             currentState = history.state;
             // console.log(currentState);
         })
@@ -62,9 +63,10 @@ async function loadNavBar() {
 }
 
 window.addEventListener('popstate', (e) => {
-    console.log(currentState);
+
     if (e.state) {
         loadModule(e.state.page);
+        history.pushState({page: e.state.page} , null, e.state.page);
     }
 });
 
@@ -96,12 +98,12 @@ userCustomerIdList.push('cus_001');
 let currentLoggedUser;
 
 function addNewUser(data) {
-    console.log(listOfUserDetails);
+
     if(validateNewUserInsertion(data)) {
         const newUser = new User(data.name, data.email, data.customerid, data.pincode, data.password);
         listOfUserDetails.push(newUser);
         userCustomerIdList.push(data.customerid);
-        console.log(listOfUserDetails);
+
         return true;
     }
     else {
@@ -140,6 +142,7 @@ function loadHomePageAfterLogin(username) {
     currentLoggedUser = username;
     loadLoginNavBar(username);
     loadModule('home');
+    history.pushState({page: 'home'} , null, 'home');
 }
 
 function loadSurveySubmitPage(surveyId, surveyTitle) {
@@ -154,6 +157,12 @@ function loadViewStatsPage(adminId) {
     loadModule('viewStats');
 }
 
+function loadFillSurveyModule() {
+    loadLoginNavBar(currentLoggedUser);
+    history.pushState({ page: 'fillSurvey' }, null, `fillSurvey`);
+    loadModule('fillSurvey');
+}
+
 async function loadLoginNavBar(username) {
     const loginNavBarModule = await import('./modules/loginnavbar.js');
     loginNavBarModule.loadInitialData(username);
@@ -161,4 +170,4 @@ async function loadLoginNavBar(username) {
     mainContainer.replaceChildren(loginNavBarElement);
 }
 
-export default { checkIsUserAvailable, addNewUser, loadModule, loginToSite, loadHomePageAfterLogin, loadSurveySubmitPage,loadViewStatsPage };
+export default { checkIsUserAvailable, addNewUser, loadModule, loginToSite, loadHomePageAfterLogin, loadSurveySubmitPage, loadViewStatsPage, loadFillSurveyModule };
