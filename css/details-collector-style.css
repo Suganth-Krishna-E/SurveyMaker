@@ -303,3 +303,72 @@ input[type="radio"]:hover {
     justify-content: center;
     margin: auto;
 }
+
+
+.survey-stats-container {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+}
+
+.stats-body {
+    border: #009879 2px solid;
+    border-radius: 5%;
+    padding: 1rem;
+}
+
+.survey-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.survey-detail {
+    flex: 1 1 calc(33.333% - 20px);
+    box-sizing: border-box;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    text-align: center;
+}
+
+.survey-detail h3 {
+    margin: 10px 0;
+    font-size: 1.2em;
+}
+
+.survey-detail p {
+    margin: 5px 0;
+    font-size: 1em;
+}
+
+.survey-submit-container {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+    padding: 1rem;
+    background-color: #f1f1f1;
+    border-top: 1px solid #ccc;
+}
+
+.survey-submit-container button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.2rem;
+    cursor: pointer;
+    border-radius: 0.4rem;
+    font-size: 1rem;
+}
+
+.survey-submit-container button:hover {
+    opacity: 0.8;
+}

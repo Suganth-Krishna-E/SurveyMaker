@@ -9,7 +9,8 @@ const routingTitleLocationModulesMap = {
     'createsurvey': './modules/createsurvey.js',
     'surveySubmit': './modules/surveysubmit.js',
     'viewStats': './modules/viewstats.js',
-    'fillSurvey': './modules/fillSurvey.js'
+    'fillSurvey': './modules/fillSurvey.js',
+    'viewSurveyDetails': './modules/viewSurveyData.js'
 }
 
 
@@ -163,6 +164,12 @@ function loadFillSurveyModule() {
     loadModule('fillSurvey');
 }
 
+function loadSurveyDetails(surveyId) {
+    loadLoginNavBar(currentLoggedUser);
+    history.pushState({ page: 'viewSurveyDetails' }, null, `viewSurveyDetails?surveyId=${surveyId}`);
+    loadModule('viewSurveyDetails');
+}
+
 async function loadLoginNavBar(username) {
     const loginNavBarModule = await import('./modules/loginnavbar.js');
     loginNavBarModule.loadInitialData(username);
@@ -170,4 +177,4 @@ async function loadLoginNavBar(username) {
     mainContainer.replaceChildren(loginNavBarElement);
 }
 
-export default { checkIsUserAvailable, addNewUser, loadModule, loginToSite, loadHomePageAfterLogin, loadSurveySubmitPage, loadViewStatsPage, loadFillSurveyModule };
+export default { checkIsUserAvailable, addNewUser, loadModule, loginToSite, loadHomePageAfterLogin, loadSurveySubmitPage, loadViewStatsPage, loadFillSurveyModule, loadSurveyDetails };

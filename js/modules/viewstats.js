@@ -1,46 +1,102 @@
 import codeMaker from "../utils/codemaker.js";
+import indexScriptModule from '../index-script.js';
 
-async function fetchSurveyDetails(adminId) {
-  const response = await fetch(
-    `http://localhost:8080/surveydetail/${adminId}`,
+const viewStatsPage = {
+  tag: "div",
+  attributes: { class: "survey-stats-container" },
+  subTags: [
     {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
-  return response.json();
-}
-
-async function displaySurveyStats(adminId) {
-  const surveyDetails = await fetchSurveyDetails(adminId);
-  console.log(adminId);
-  const surveyStatsContainer = {
-    tag: "div",
-    attributes: { class: "survey-stats-container" },
-    subTags: surveyDetails.map((survey, index) => ({
       tag: "div",
-      attributes: { class: "survey-detail" },
+      attributes: { class: "stats-header" },
       subTags: [
         {
-          tag: "p",
-          valueInsideTag: `Survey ID: ${survey.surveyId}`,
-        },
-        {
-          tag: "h3",
-          valueInsideTag: `Survey Title: ${survey.surveyTitle}`,
+          tag: "h2",
+          valueInsideTag: "Survey Statistics",
         },
       ],
-    })),
-  };
+    },
+  ],
+};
 
-  const container = codeMaker.convertIntoHtml(surveyStatsContainer);
+const urlParams = new URLSearchParams(window.location.search);
+const adminId = urlParams.get("adminId");
+console.log(adminId);
 
-  return container;
+
+async function fetchSurveyStats(adminId) {
+  try {
+    const response = await fetch(`http://localhost:8080/surveydetail/${adminId}`);
+    const surveys = await response.json();
+    return surveys;
+  } catch (error) {
+    console.error("Error fetching survey stats:", error);
+    return [];
+  }
+}
+
+function displaySurveyStats(surveys) {
+  const divBody = document.createElement('div');
+  divBody.setAttribute('class', 'stats-body');
+
+  surveys.forEach((survey) => {
+    const surveyElement = codeMaker.convertIntoHtml({
+      tag: "div",
+      attributes: { class: "survey-stat" },
+      subTags: [
+        {
+          tag: "h3",
+          valueInsideTag: survey.surveyTitle,
+        },
+        {
+          tag: "p",
+          valueInsideTag: survey.surveyId,
+        },
+      ],
+    });
+    divBody.appendChild(surveyElement);
+
+  });
+
+  return divBody;
+}
+
+async function getDataFilled(formElement) {
+  const adminId = document.getElementById('username-display').innerText;
+  const surveys = await fetchSurveyStats(adminId);
+
+  formElement.appendChild(displaySurveyStats(surveys));
+  
+  return formElement;
+}
+
+function attachEventListeners(formElement) {
+  const surveyDetails = formElement.querySelectorAll('.survey-stat');
+
+  console.log(formElement.querySelector('.stats-body'));
+
+  console.log(formElement);
+  console.log(surveyDetails);
+
+  surveyDetails.forEach((surveyStat) => {
+    surveyStat.addEventListener('click', () => {
+      indexScriptModule.loadSurveyDetails(surveyStat.querySelector('h3').innerText);
+    })
+  })
 }
 
 export function getData() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const adminId = urlParams.get("adminId");
-  return displaySurveyStats(adminId);
+  const formElement = codeMaker.convertIntoHtml(viewStatsPage);
+  getDataFilled(formElement)
+  .then((value) => {
+    return value;
+  })
+  .catch(err => {
+    return err;
+  });
+  
+  attachEventListeners(formElement);
+
+  return formElement;
 }
+
+export default { getData };
