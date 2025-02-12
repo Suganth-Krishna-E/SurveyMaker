@@ -2,7 +2,6 @@ import { getAllMarksFromMap } from "./simplestorethreediv-script.js";
 
 export default class DataStore {
     createNewDataStoreVariable(dataValue) {
-        // console.log(`New dataStore creation called ${dataValue} created store`);
         const dataStore = {
             'value': dataValue,
             'subscribers': [],
@@ -12,35 +11,14 @@ export default class DataStore {
     }
     
     setData(dataStore, data) {
-        console.log(dataStore);
         dataStore.value = Number(data);
         dataStore[`subscribers`].forEach((updateFunction) => {
             updateFunction(getAllMarksFromMap());
-            console.log(`Call to ${updateFunction}`);
         });
-        console.log(dataStore);
-
-    
-        // let stringCallback = 
-        // `function(data) {
-        //     updateAverageMark(data, function() {
-        //         updateCutoffMark(data, function() {
-        //             updateTotalMark(data, function() {
-        //                 simpleDisplayAllMarks(data);
-        //             })
-        //         }) 
-        //     })      
-        // }`;
-        // dataStore[`${subject}-callback`];
-        // return this.getCallbackFunction(dataStore);
-        
     }
     
     getCallbackFunction(dataStore) {
         const stringCallback = this.getStringCallbackFromArrayOfFunctions(dataStore[`subscribers`])
-        const updateFunctionWhole = new Function(`return ${stringCallback}`)();
-        console.log(updateFunctionWhole);
-        // return updateFunctionWhole;
         return stringCallback;
     }
     
@@ -48,7 +26,6 @@ export default class DataStore {
         const endIndex = arrayOfFunctions.length;
         let index = 0;
         let stringResult = `function(data) { ${this.getAllFunctionAdded(arrayOfFunctions, index, endIndex)} };`
-        console.log(this.getAllFunctionAdded(arrayOfFunctions, index, endIndex));
         return stringResult;
     }
     
@@ -70,7 +47,6 @@ export default class DataStore {
     }
 
     unSubscribeToDataStore(datas, subscriber) {
-        // console.log(`Unsubscribe functions called ${datas} ${subscriber}`);
         for(const dataStore of datas) {
             if(dataStore.subscribers && dataStore.subscribers.includes(subscriber)) {
                 dataStore.subscribers.pop(subscriber);               

@@ -152,7 +152,6 @@ function attachEventHandlers(formElement) {
             body: JSON.stringify(surveyData),
           });
           const result = await response.json();
-          console.log(result);
           swal(
             "Survey Published",
             "Your survey has been published successfully!",
@@ -229,7 +228,7 @@ async function addQuestionHandlers(questionElement, id) {
     .addEventListener("click", () => {
       copyQuestion(questionElement);
     });
-  await updateAnswerInput("text", answerContainer, id); // Set default type to 'text'
+  await updateAnswerInput("text", answerContainer, id);
 }
 
 async function updateAnswerInput(type, container, id) {

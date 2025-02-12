@@ -3,7 +3,7 @@ import codemaker from "../utils/codemaker";
 const viewSurveyData = {
     tag: 'div',
     attributes: {
-        class: 'survey-data-view-container'
+        class: 'main-container'
     },
     subTags: [
         {
@@ -43,13 +43,11 @@ const viewSurveyData = {
 
 const urlParams = new URLSearchParams(window.location.search);
 const surveyId = urlParams.get('surveyId');
-console.log(`View survey Details called for ${surveyId}`);
 
 async function getSurveyDetails(surveyId) {
     try {
         const response = await fetch(`http://localhost:8080/surveydetail/getSurveyById/${surveyId}`);
         const surveyDetails = await response.json();
-        console.log(surveyDetails);
     }
     catch(error) {
         swal('Error', 'There was and error from server', 'warning');
@@ -58,6 +56,8 @@ async function getSurveyDetails(surveyId) {
 
 export function getData() {
     const resultElement = codemaker.convertIntoHtml(viewSurveyData);
+
+    getSurveyDetails(surveyId);
 
     return resultElement;
 }

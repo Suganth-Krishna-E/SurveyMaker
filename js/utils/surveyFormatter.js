@@ -33,4 +33,3 @@ const survey = [
     { Title: 'Question 4', Type: 'file', Format: 'pdf', Notes: 'Some notes' }
 ];
 
-console.log(formatSurvey(survey));

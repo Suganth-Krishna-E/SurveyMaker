@@ -1,7 +1,6 @@
 import codeMaker from '../utils/codemaker.js';
 import indexScriptModule from '../index-script.js';
 
-console.log(indexScriptModule.checkIsUserAvailable("Suganth"));
 
 const dataInput = {
     tag: 'main',
@@ -21,7 +20,7 @@ const dataInput = {
                         {
                             tag: 'div',
                             attributes: {
-                                class: 'input-fields dis-fl'
+                                class: 'input-fields-two-column dis-fl'
                             },
                             subTags: [
                                 {
@@ -44,7 +43,6 @@ const dataInput = {
                                                 required: true
                                             },
                                             validations: {
-                                                // validationName: 'camelcase-nospace-charsonly',
                                                 errorMessage: 'Follow the specified format'
                                             }
                                         }
@@ -70,7 +68,6 @@ const dataInput = {
                                                 required: true
                                             },
                                             validations: {
-                                                // validationName: 'email-with-@trustraceonly',
                                                 errorMessage: 'Out of organization email'
                                             }
                                         }
@@ -96,7 +93,6 @@ const dataInput = {
                                                 required: true
                                             },
                                             validations: {
-                                                // validationName: 'small-nospace-alphanumeric-withunderscoreonly',
                                                 errorMessage: 'Not a valid Customer ID'
                                             }
                                         }
@@ -202,8 +198,6 @@ submitbutton[0].addEventListener('click', (e) => {
         password: inputelements[4].value,
     }
     if(allElemntsValid === true && indexScriptModule.addNewUser(data)) {        
-        console.log(`User created`);
-        console.log(e);    
         clearAllInputs();
         allElemntsValid = true;
         swal({
@@ -212,7 +206,6 @@ submitbutton[0].addEventListener('click', (e) => {
             icon: "success"
         });
         loadLoginModule();
-        console.log("Login Module Loaded");
     }
     else {
         swal({
@@ -220,7 +213,6 @@ submitbutton[0].addEventListener('click', (e) => {
             title: "Oops...",
             text: "The inputs are not valid",
           });
-        console.log("Not all fields are valid");
     }
     e.preventDefault();
 })
@@ -230,7 +222,6 @@ let allElemntsValid = true;
 const validationsOfElements = {
     'user-name': (event) => {
         const valueInsideTag = event.target.value;
-        // console.log(` ${validateAlphabetsWithCapital(valueInsideTag)}`);
         if(validateAlphabetsWithCapital(valueInsideTag)) {
             event.target.style.border = '2px solid black';
         }
@@ -295,7 +286,6 @@ formbase[0].addEventListener("submit", (e) => {
 });
 
 for(const element of inputelements) {
-    // console.log(element.getAttribute('id'));
     element.addEventListener("blur", validationsOfElements[element.getAttribute('id')]);
     element.addEventListener("paste", validationsOfElements[element.getAttribute('id')]);
 }
@@ -362,7 +352,6 @@ function validateAlphabetsWithCapital(value) {
 function validateEmail(value, domain) {
     const endingPattern = new RegExp(domain + "\\s*$");
     const pattern = new RegExp(/^[^@\s]+@[^@\s]+\.[^@\s]+$/);
-    // /@yahoo.com\s*$/.test(myemail)
 
     if(endingPattern.test(value)) {
         if(pattern.test(value)) {
@@ -379,7 +368,6 @@ function validateEmail(value, domain) {
 
 function validateCustomerId(value) {
     if(value.length < 1 || value.length > 15) {
-        // console.log("Length of ID false");
         return false;
     }
     for(const data of value) {
@@ -407,8 +395,6 @@ function validateCustomerId(value) {
 
 function validateDob(value, date) {
     const dob = new Date(value);
-    // console.log(`DOB ${dob} current Date ${date}`);
-    // console.log(date.getFullYear() - dob.getFullYear());
     if(((date.getFullYear() - dob.getFullYear()) > 0) || ((date.getMonth() - dob.getMonth()) > 0) || ((date.getDay() - dob.getDay()) > 0)) {
         return true;
     }
@@ -455,7 +441,6 @@ function checkIsSpace(letter) {
 
 
 function isStartingLetter(text) {
-    // console.log(`Starting Letter function called ${text}`);
     if(text !== undefined) {
         if(text.length === 1 || text[text.length - 2] === " ") {
             return true;
@@ -471,7 +456,6 @@ function isStartingLetter(text) {
 }
 
 function isStartingOrEnding(text) {
-    // console.log(text);
     if(text !== undefined) {
         if(text.length === 1) {
             return true;

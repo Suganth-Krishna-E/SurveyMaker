@@ -2,7 +2,10 @@ import codeMaker from '../utils/codemaker.js';
 import indexScriptModule from '../index-script.js';
 
 const loginFormInput = {
-    tag: 'main',
+    tag: 'div',
+    attributes: {
+        class: 'main-container'
+    },
     subTags: [
         {
             tag: 'div',
@@ -137,7 +140,6 @@ function getData() {
 const validationsOfElements = {
     'login-username': (event) => {
         const value = event.target.value;
-        console.log(value);
         event.target.style.border = validateAlphanumeric(value) ? '2px solid black' : '2px solid red';
     },
     'login-password': (event) => {

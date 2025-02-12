@@ -2,7 +2,10 @@ import codeMaker from '../utils/codemaker.js';
 import indexScriptModule from '../index-script.js';
 
 const surveyModuleJson = {
-    tag: "main",
+    tag: "div",
+    attributes: {
+        class: "main-container"
+    },
     subTags: [
         {
             tag: "div",
@@ -38,17 +41,14 @@ function getData() {
 
 function attachEventHandlers() {
     returnElement.querySelector("#create-survey-btn").addEventListener("click", () => {
-        console.log("Create Survey button clicked");
         indexScriptModule.loadModule("createsurvey");
     });
 
     returnElement.querySelector("#fill-survey-btn").addEventListener("click", () => {
-        console.log("Fill Survey button clicked");
         indexScriptModule.loadFillSurveyModule();
     });
 
     returnElement.querySelector("#view-stats-btn").addEventListener("click", () => {
-        console.log("View Stats button clicked");
         const adminId = document.getElementById('username-display').innerText;
         indexScriptModule.loadViewStatsPage(adminId);
     });

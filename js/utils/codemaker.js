@@ -19,8 +19,6 @@
 function convertIntoHtml(data) {
     if(data !== undefined) {
         if(data.tag !== undefined) {
-            // console.log("Enterd default function");
-            // console.log(typeof(data.tag));
             const rootTag = document.createElement(data.tag);
             for(const [key, value] of Object.entries(data)) {
                 if(key === 'tag') {

@@ -1,7 +1,10 @@
 import codeMaker from "../utils/codemaker.js";
 
 const surveyFormJson = {
-  tag: "main",
+  tag: "div",
+  attributes: {
+    class: "main-container"
+  },
   subTags: [
     {
       tag: "div",
@@ -90,7 +93,6 @@ function attachEventHandlers() {
       const userId = document.getElementById("username-display").innerText;
       const answers = collectResponses();
       const responsePayload = { surveyId, userId, answers };
-      console.log(responsePayload);
       const result = await submitSurveyResponse(responsePayload);
       if (result) {
         swal("Success", "Survey submitted successfully", "success");
@@ -135,7 +137,7 @@ function displaySurveyQuestions(questions, surveyData) {
   surveyTitle.innerText = surveyData.title;
   surveyDescription.innerText = surveyData.description;
 
-  questionsContainer.innerHTML = ""; // Clear previous questions
+  questionsContainer.innerHTML = "";
 
   questionsContainer.appendChild(surveyTitle);
   questionsContainer.appendChild(surveyDescription);
@@ -152,7 +154,7 @@ function createQuestionElement(question) {
 
   const questionTitle = document.createElement("div");
   questionTitle.className = "question-title-text";
-  questionTitle.innerText = question.questionNumber + " " + question.title;
+  questionTitle.innerText = question.questionNumber + ") " + question.title;
   questionContainer.appendChild(questionTitle);
 
   if (question.type === "mcq") {
@@ -239,7 +241,6 @@ function collectResponses() {
       questionId: questionId,
     };
 
-    console.log(inputs);
 
     if(inputs.length === 1) {
         if(inputs[0].type === "text") {
@@ -261,21 +262,6 @@ function collectResponses() {
             response.answerMcq = checkedInputs;
         }
     }
-
-    // if (inputs.length === 1) {
-    //   response.answer = inputs[0].value;
-    // } else {
-    //   inputs.forEach((input) => {
-    //     if (input.checked) {
-    //       if (response.answer) {
-    //         response.answer.push(input.value);
-    //       } else {
-    //         response.answer = [];
-    //         response.answer.push(input.value);
-    //       }
-    //     }
-    //   });
-    // }
 
     responses.push(response);
   });
@@ -306,7 +292,6 @@ async function submitSurveyResponse(responsePayload) {
         body: JSON.stringify(responsePayload),
       }
     );
-    console.log(response);
     return response.ok;
   } catch (error) {
     console.error("Error submitting survey response:", error);

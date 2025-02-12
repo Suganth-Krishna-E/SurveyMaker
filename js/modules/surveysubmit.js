@@ -7,25 +7,33 @@ export function getData() {
   const surveyTitle = urlParams.get("surveyTitle");
 
   const surveySubmitForm = {
-    tag: "div",
-    attributes: { class: "survey-submit-container" },
+    tag: 'div',
+    attributes: {
+      class: 'main-container'
+    },
     subTags: [
       {
-        tag: "h1",
-        valueInsideTag: "Survey Published Successfully!"
-      },
-      {
-        tag: "p",
-        valueInsideTag: `Survey ID: ${surveyId}`
-      },
-      {
-        tag: "p",
-        valueInsideTag: `Survey Title: ${surveyTitle}`
-      },
-      {
-        tag: "button",
-        attributes: { id: "view-stats" },
-        valueInsideTag: "View Survey Stats"
+        tag: "div",
+        attributes: { class: "survey-submit-container" },
+        subTags: [
+          {
+            tag: "h1",
+            valueInsideTag: "Survey Published Successfully!"
+          },
+          {
+            tag: "p",
+            valueInsideTag: `Survey ID: ${surveyId}`
+          },
+          {
+            tag: "p",
+            valueInsideTag: `Survey Title: ${surveyTitle}`
+          },
+          {
+            tag: "button",
+            attributes: { id: "view-stats" },
+            valueInsideTag: "View Survey Stats"
+          }
+        ]
       }
     ]
   };

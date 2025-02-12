@@ -1,4 +1,3 @@
-const mainContainer = document.getElementById("main-container");
 let currentState;
 
 const routingTitleLocationModulesMap = {
@@ -24,14 +23,20 @@ async function loadModule(moduleName) {
     if(moduleName !== 'index') {
         const moduleData = await import(routingTitleLocationModulesMap[moduleName]);
 
-        const mainContainerData = document.getElementsByTagName('main');
-
-        if(mainContainerData.length !== 0) {
-            mainContainer.removeChild(mainContainerData[0]);
-        }
-    
+        const mainContainerData = document.querySelector('.main-container');
         const container = await moduleData.getData();
-        mainContainer.appendChild(container);
+
+
+        if(mainContainerData !== null) {
+            document.body.removeChild(mainContainerData);
+        }
+        document.body.appendChild(container);
+
+        // document.body.replaceChild(mainContainerData, container);
+    
+        if(moduleData.attachEventListeners !== undefined) {
+            moduleData.attachEventListeners();
+        }
     }
     else {
         loadNavBar();
@@ -42,13 +47,17 @@ async function loadNavBar() {
     const navBarModule = await import('./modules/navbar.js');
     const navBarElement = navBarModule.getData();
 
-    mainContainer.appendChild(navBarElement);
+    const body = document.querySelector('.nav-bar');
 
-    const mainContainerData = document.getElementsByTagName('main');
-
-    if(mainContainerData.length !== 0) {
-        mainContainer.removeChild(mainContainerData[0]);
+    const mainContainer = document.querySelector('.main-container');
+    
+    if(body !== null) {
+        document.replaceChild(body, navBarElement);
     }
+    else {
+        document.body.insertBefore(navBarElement, mainContainer);
+    }
+    
 
     const listNavBarElements = document.querySelectorAll('.nav-bar li');
     listNavBarElements.forEach((element) => {
@@ -58,13 +67,12 @@ async function loadNavBar() {
             loadModule(moduleName);
             history.pushState({page: moduleName} , null, moduleName);
             currentState = history.state;
-            // console.log(currentState);
         })
     })
 }
 
 window.addEventListener('popstate', (e) => {
-
+    e.preventDefault();
     if (e.state) {
         loadModule(e.state.page);
         history.pushState({page: e.state.page} , null, e.state.page);
@@ -173,8 +181,10 @@ function loadSurveyDetails(surveyId) {
 async function loadLoginNavBar(username) {
     const loginNavBarModule = await import('./modules/loginnavbar.js');
     loginNavBarModule.loadInitialData(username);
+
     const loginNavBarElement = loginNavBarModule.getData();
-    mainContainer.replaceChildren(loginNavBarElement);
+
+    document.body.replaceChildren(loginNavBarElement);
 }
 
 export default { checkIsUserAvailable, addNewUser, loadModule, loginToSite, loadHomePageAfterLogin, loadSurveySubmitPage, loadViewStatsPage, loadFillSurveyModule, loadSurveyDetails };

@@ -2,25 +2,32 @@ import codeMaker from "../utils/codemaker.js";
 import indexScriptModule from '../index-script.js';
 
 const viewStatsPage = {
-  tag: "div",
-  attributes: { class: "survey-stats-container" },
+  tag: 'div',
+  attributes: {
+    class: 'main-container'
+  },
   subTags: [
     {
       tag: "div",
-      attributes: { class: "stats-header" },
+      attributes: { class: "survey-stats-container" },
       subTags: [
         {
-          tag: "h2",
-          valueInsideTag: "Survey Statistics",
+          tag: "div",
+          attributes: { class: "stats-header" },
+          subTags: [
+            {
+              tag: "h2",
+              valueInsideTag: "Survey Statistics",
+            },
+          ],
         },
       ],
-    },
-  ],
+    }
+  ]
 };
 
 const urlParams = new URLSearchParams(window.location.search);
 const adminId = urlParams.get("adminId");
-console.log(adminId);
 
 
 async function fetchSurveyStats(adminId) {
@@ -69,34 +76,50 @@ async function getDataFilled(formElement) {
   return formElement;
 }
 
-function attachEventListeners(formElement) {
-  const surveyDetails = formElement.querySelectorAll('.survey-stat');
+export function attachEventListeners() {
+  const surveyStatsContainer = document.querySelectorAll('.survey-stats-container');
+  
+  const stats = document.querySelectorAll('div');
 
-  console.log(formElement.querySelector('.stats-body'));
 
-  console.log(formElement);
-  console.log(surveyDetails);
+  setTimeout(() => {
+    const stats = document.querySelectorAll('div');
+
+  }, 2000);
+
+
+  const surverBodyContainer = surveyStatsContainer[0].children;
+
+
+
+  surverBodyContainer.forEach((element) => {
+  })
+
+  const surveyDetails = surverBodyContainer.querySelectorAll('.survey-stat');
+
+  
 
   surveyDetails.forEach((surveyStat) => {
-    surveyStat.addEventListener('click', () => {
-      indexScriptModule.loadSurveyDetails(surveyStat.querySelector('h3').innerText);
-    })
-  })
+    if(true) {
+      surveyStat.addEventListener('click', () => {
+        indexScriptModule.loadSurveyDetails(surveyStat.querySelector('h3').innerText);
+      });
+    }
+    
+  });
 }
 
-export function getData() {
+export async function getData() {
   const formElement = codeMaker.convertIntoHtml(viewStatsPage);
-  getDataFilled(formElement)
+  await getDataFilled(formElement)
   .then((value) => {
     return value;
   })
   .catch(err => {
     return err;
   });
-  
-  attachEventListeners(formElement);
 
   return formElement;
 }
 
-export default { getData };
+export default { getData, attachEventListeners };

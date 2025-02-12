@@ -304,6 +304,11 @@ input[type="radio"]:hover {
     margin: auto;
 }
 
+.stats-body {
+    display: flex;
+    gap: 1rem;
+}
+
 
 .survey-stats-container {
     display: flex;
@@ -312,20 +317,6 @@ input[type="radio"]:hover {
     align-items: center;
     gap: 20px;
     padding: 20px;
-}
-
-.stats-body {
-    border: #009879 2px solid;
-    border-radius: 5%;
-    padding: 1rem;
-}
-
-.survey-stat {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    justify-content: center;
 }
 
 .survey-detail {
