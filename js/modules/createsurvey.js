@@ -144,12 +144,19 @@ function attachEventHandlers(formElement) {
         surveyData.adminId = document.getElementById('username-display').innerText;
 
         try {
-          const response = await fetch("http://localhost:8080/surveydetail/publish", {
+          const response = await fetch(`${backendConnectionUrl}/surveydetail/publish`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify(surveyData),
+          })
+          .catch((error) => {
+            swal(
+              "Error",
+              "There was an error connecting to the backend. Please try again after some time.",
+              "error"
+            );
           });
           const result = await response.json();
           swal(
@@ -159,10 +166,9 @@ function attachEventHandlers(formElement) {
           );
           indexScriptModule.loadSurveySubmitPage(result.surveyId, result.surveyTitle);
         } catch (error) {
-          console.error("Error publishing survey:", error);
           swal(
             "Error",
-            "There was an error publishing your survey. Please try again.",
+            "There was an error connecting to the backend. Please try again after some time.",
             "error"
           );
         }

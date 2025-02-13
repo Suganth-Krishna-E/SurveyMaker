@@ -39,7 +39,17 @@ function loadInitialData() {
 
 loadInitialData();
 
+function attachEventListeners() {
+    outputElement.querySelectorAll('li').forEach(element => {
+        element.addEventListener('mouseover', () => {
+            element.style.cursor = 'pointer';
+        });
+    });
+}
+
 function getData() {
+    attachEventListeners();
+
     return outputElement;
 }
 

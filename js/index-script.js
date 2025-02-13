@@ -12,6 +12,8 @@ const routingTitleLocationModulesMap = {
     'viewSurveyDetails': './modules/viewSurveyData.js'
 }
 
+const backendConnectionUrl = 'http://localhost:8080';
+
 
 function loadInitialData() {
     loadNavBar();
@@ -98,11 +100,8 @@ class User {
     }
 }
 
-const listOfUserDetails = [
-    new User('Suganth Krishna E', 'suganth@trustrace.com', 'cus_001', '638812', 'Suganth_7575')
-];
 const userCustomerIdList = [];
-userCustomerIdList.push('cus_001');
+
 
 let currentLoggedUser;
 
@@ -138,13 +137,7 @@ function validateNewUserInsertion(data) {
 
 
 function loginToSite(username, password) {
-    const user = listOfUserDetails.find((user) => user.username === username && user.password === password);
-    if(user) {
-        return true;
-    }
-    else {
-        return false;
-    }
+    return true;
 }
 
 function loadHomePageAfterLogin(username) {

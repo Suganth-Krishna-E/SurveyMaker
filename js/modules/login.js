@@ -129,11 +129,12 @@ const loginFormInput = {
 
 let returnElement;
 
+
 function getData() {
     returnElement = codeMaker.convertIntoHtml(loginFormInput);
     attachValidationHandlers();
-    attachCapsLockWarning();
     attachPasswordVisibilityToggle();
+
     return returnElement;
 }
 
@@ -151,12 +152,21 @@ const validationsOfElements = {
 function attachValidationHandlers() {
     const inputElements = returnElement.getElementsByTagName('input');
     const formBase = returnElement.getElementsByClassName('login-base-form')[0];
+    const labels = returnElement.querySelectorAll('label');
+
+    labels.forEach(element => {
+        element.addEventListener('mouseover', () => {
+            element.style.cursor = 'pointer';
+        })
+    });
+
 
     formBase.addEventListener('submit', (e) => {
         for (const element of inputElements) {
             if (element.style.border === '2px solid red' || element.value === '') {
                 element.focus();
                 e.preventDefault();
+                // document.getElementById
                 return;
             } else {
                 e.preventDefault();
@@ -177,19 +187,6 @@ function attachValidationHandlers() {
             element.addEventListener('paste', validationsOfElements[id]);
         }
     }
-}
-
-function attachCapsLockWarning() {
-    const passwordInput = returnElement.querySelector('#login-password');
-    const capsLockWarning = returnElement.querySelector('#caps-lock-warning');
-
-    passwordInput.addEventListener('keyup', (event) => {
-        if (event.getModifierState('CapsLock')) {
-            capsLockWarning.style.display = 'block';
-        } else {
-            capsLockWarning.style.display = 'none';
-        }
-    });
 }
 
 function attachPasswordVisibilityToggle() {

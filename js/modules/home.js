@@ -36,10 +36,15 @@ let returnElement;
 function getData() {
     returnElement = codeMaker.convertIntoHtml(surveyModuleJson);
     attachEventHandlers();
+
     return returnElement;
 }
 
 function attachEventHandlers() {
+    returnElement.querySelectorAll('li').forEach(element => {
+        element.style.cursor = 'default';
+    });
+
     returnElement.querySelector("#create-survey-btn").addEventListener("click", () => {
         indexScriptModule.loadModule("createsurvey");
     });

@@ -2,177 +2,168 @@ import codeMaker from '../utils/codemaker.js';
 import indexScriptModule from '../index-script.js';
 
 
-const dataInput = {
-    tag: 'main',
+const dataInput =  {
+    tag: 'div',
+    attributes: {
+        class: 'main-container wid23 dis-fl'
+    },
     subTags: [
         {
-            tag: 'div',
+            tag: 'form',
             attributes: {
-                class: 'main-container wid23 dis-fl'
+                class: 'details-base-form',
             },
             subTags: [
                 {
-                    tag: 'form',
+                    tag: 'div',
                     attributes: {
-                        class: 'details-base-form',
+                        class: 'input-fields-two-column dis-fl'
+                    },
+                    subTags: [
+                        {
+                            tag: 'div',
+                            subTags: [
+                                {
+                                    tag: 'label',
+                                    attributes: {
+                                        for: 'user-name',
+                                    },
+                                    valueInsideTag: 'Name'
+                                },
+                                {
+                                    tag: 'input',
+                                    attributes: {
+                                        type: 'text',
+                                        id: 'user-name',
+                                        name: 'user-name',
+                                        placeholder: 'Enter your name',
+                                        required: true
+                                    },
+                                    validations: {
+                                        errorMessage: 'Follow the specified format'
+                                    }
+                                }
+                            ]
+                        }, 
+                        {
+                            tag: 'div',
+                            subTags: [
+                                {
+                                    tag: 'label',
+                                    attributes: {
+                                        for: 'user-email',
+                                    },
+                                    valueInsideTag: 'Email'
+                                },
+                                {
+                                    tag: 'input',
+                                    attributes: {
+                                        type: 'email',
+                                        id: 'user-email',
+                                        name: 'user-email',
+                                        placeholder: 'Enter your email',
+                                        required: true
+                                    },
+                                    validations: {
+                                        errorMessage: 'Out of organization email'
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            tag: 'div',
+                            subTags: [
+                                {
+                                    tag: 'label',
+                                    attributes: {
+                                        for: 'customer-id',
+                                    },
+                                    valueInsideTag: 'Customer ID'
+                                },
+                                {
+                                    tag: 'input',
+                                    attributes: {
+                                        type: 'text',
+                                        id: 'customer-id',
+                                        name: 'customer-id',
+                                        placeholder: 'Enter your customer ID',
+                                        required: true
+                                    },
+                                    validations: {
+                                        errorMessage: 'Not a valid Customer ID'
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            tag: 'div',
+                            subTags: [
+                                {
+                                    tag: 'label',
+                                    attributes: {
+                                        for: 'pincode',
+                                    },
+                                    valueInsideTag: 'Pincode(INDIA only)'
+                                },
+                                {
+                                    tag: 'input',
+                                    attributes: {
+                                        type: 'text',
+                                        id: 'pincode',
+                                        name: 'pincode',
+                                        placeholder: 'Enter your current pincode',
+                                        required: true  
+                                    },
+                                    validations: {
+                                        validationName: 'indian-pincode',
+                                        errorMessage: 'Ohhh Enter a proper pincode'
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            tag: 'div',
+                            subTags: [
+                                {
+                                    tag: 'label',
+                                    attributes: {
+                                        for: 'password',
+                                    },
+                                    valueInsideTag: 'New Password'
+                                },
+                                {
+                                    tag: 'input',
+                                    attributes: {
+                                        type: 'password',
+                                        id: 'password',
+                                        name: 'passsword',
+                                        placeholder: 'Enter your new password',
+                                        required: true  
+                                    },
+                                }
+                            ]
+                        },
+                    ]
+                },
+                {
+                    tag: 'div',
+                    attributes: {
+                        id: 'submit-field',
+                        class: 'submit-field dis-fl'
                     },
                     subTags: [
                         {
                             tag: 'div',
                             attributes: {
-                                class: 'input-fields-two-column dis-fl'
+                                type: 'submit',
+                                id: 'submit-btn'    
                             },
-                            subTags: [
-                                {
-                                    tag: 'div',
-                                    subTags: [
-                                        {
-                                            tag: 'label',
-                                            attributes: {
-                                                for: 'user-name',
-                                            },
-                                            valueInsideTag: 'Name'
-                                        },
-                                        {
-                                            tag: 'input',
-                                            attributes: {
-                                                type: 'text',
-                                                id: 'user-name',
-                                                name: 'user-name',
-                                                placeholder: 'Enter your name',
-                                                required: true
-                                            },
-                                            validations: {
-                                                errorMessage: 'Follow the specified format'
-                                            }
-                                        }
-                                    ]
-                                }, 
-                                {
-                                    tag: 'div',
-                                    subTags: [
-                                        {
-                                            tag: 'label',
-                                            attributes: {
-                                                for: 'user-email',
-                                            },
-                                            valueInsideTag: 'Email'
-                                        },
-                                        {
-                                            tag: 'input',
-                                            attributes: {
-                                                type: 'email',
-                                                id: 'user-email',
-                                                name: 'user-email',
-                                                placeholder: 'Enter your email',
-                                                required: true
-                                            },
-                                            validations: {
-                                                errorMessage: 'Out of organization email'
-                                            }
-                                        }
-                                    ]
-                                },
-                                {
-                                    tag: 'div',
-                                    subTags: [
-                                        {
-                                            tag: 'label',
-                                            attributes: {
-                                                for: 'customer-id',
-                                            },
-                                            valueInsideTag: 'Customer ID'
-                                        },
-                                        {
-                                            tag: 'input',
-                                            attributes: {
-                                                type: 'text',
-                                                id: 'customer-id',
-                                                name: 'customer-id',
-                                                placeholder: 'Enter your customer ID',
-                                                required: true
-                                            },
-                                            validations: {
-                                                errorMessage: 'Not a valid Customer ID'
-                                            }
-                                        }
-                                    ]
-                                },
-                                {
-                                    tag: 'div',
-                                    subTags: [
-                                        {
-                                            tag: 'label',
-                                            attributes: {
-                                                for: 'pincode',
-                                            },
-                                            valueInsideTag: 'Pincode(INDIA only)'
-                                        },
-                                        {
-                                            tag: 'input',
-                                            attributes: {
-                                                type: 'text',
-                                                id: 'pincode',
-                                                name: 'pincode',
-                                                placeholder: 'Enter your current pincode',
-                                                required: true  
-                                            },
-                                            validations: {
-                                                validationName: 'indian-pincode',
-                                                errorMessage: 'Ohhh Enter a proper pincode'
-                                            }
-                                        }
-                                    ]
-                                },
-                                {
-                                    tag: 'div',
-                                    subTags: [
-                                        {
-                                            tag: 'label',
-                                            attributes: {
-                                                for: 'password',
-                                            },
-                                            valueInsideTag: 'New Password'
-                                        },
-                                        {
-                                            tag: 'input',
-                                            attributes: {
-                                                type: 'password',
-                                                id: 'password',
-                                                name: 'passsword',
-                                                placeholder: 'Enter your new password',
-                                                required: true  
-                                            },
-                                        }
-                                    ]
-                                },
-                            ]
-                        },
-                        {
-                            tag: 'div',
-                            attributes: {
-                                id: 'submit-field'
-                            },
-                            subTags: [
-                                {
-                                    tag: 'div',
-                                    subTags: [
-                                        {
-                                            tag: 'button',
-                                            attributes: {
-                                                type: 'submit',
-                                                id: 'submit-btn'    
-                                            },
-                                            valueInsideTag: 'Submit'
-                                        }
-                                    ]
-                                }
-                            ]
+                            valueInsideTag: 'Submit'
                         }
-                    ]    
-                }    
-            ]
-        }
+                    ]
+                }
+            ]    
+        }    
     ]
 };
 
@@ -186,9 +177,18 @@ function loadInitialData() {
 
 const inputelements = returnElement.getElementsByTagName('input');
 const formbase = returnElement.getElementsByClassName('details-base-form');
-const submitbutton = returnElement.getElementsByTagName('button');
+const submitbutton = returnElement.querySelector('#submit-btn');
+const labels = returnElement.querySelectorAll('label');
 
-submitbutton[0].addEventListener('click', (e) => {
+labels.forEach(element => {
+    element.addEventListener('mouseover', () => {
+        element.style.cursor = 'pointer';
+    })
+});
+
+submitbutton.style.cursor = 'not-allowed';
+
+submitbutton.addEventListener('click', (e) => {
     checkAllFeildsValid();
     const data = {
         name: inputelements[0].value,
@@ -199,6 +199,7 @@ submitbutton[0].addEventListener('click', (e) => {
     }
     if(allElemntsValid === true && indexScriptModule.addNewUser(data)) {        
         clearAllInputs();
+        submitbutton.style.cursor = 'pointer';
         allElemntsValid = true;
         swal({
             title: "User Created!",
@@ -208,16 +209,20 @@ submitbutton[0].addEventListener('click', (e) => {
         loadLoginModule();
     }
     else {
+        submitbutton.style.cursor = 'not-allowed';
         swal({
             icon: "error",
             title: "Oops...",
             text: "The inputs are not valid",
           });
     }
-    e.preventDefault();
+});
+
+submitbutton.addEventListener('mouseover', () => {
+    submitbutton.style.cursor = 'pointer';
 })
 
-let allElemntsValid = true;
+let allElemntsValid = false;
 
 const validationsOfElements = {
     'user-name': (event) => {
