@@ -1,4 +1,5 @@
 import codeMaker from "../utils/codemaker.js";
+import indexScriptModule from "../index-script.js"
 
 const surveyFormJson = {
   tag: "div",
@@ -105,7 +106,7 @@ function attachEventHandlers() {
 async function fetchSurveyData(surveyId) {
   try {
     const response = await fetch(
-      `${backendConnectionUrl}/surveydetail/getSurveyById/${surveyId}`,
+      `${indexScriptModule.backendConnectionUrl}/surveydetail/getSurveyById/${surveyId}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -281,7 +282,7 @@ function getSelectedInputs(inputs) {
 async function submitSurveyResponse(responsePayload) {
   try {
     const response = await fetch(
-      `${backendConnectionUrl}/surveyresponse/submit`,
+      `${indexScriptModule.backendConnectionUrl}/surveyresponse/submit`,
       {
         method: "POST",
         headers: {

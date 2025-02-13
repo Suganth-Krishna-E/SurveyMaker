@@ -123,6 +123,11 @@ body {
     margin-bottom: 1.2rem;
 }
 
+select {
+    cursor: pointer;
+
+}
+
 input[type="text"], textarea, select, input[type="number"] {
     width: 90%;
     padding: 0.6rem;
@@ -436,4 +441,56 @@ button:hover {
     display: flex;
     align-items: center;
     gap: 1rem;
+}
+
+.response-table {
+    border-collapse: collapse;
+    border-radius: 1rem;
+    /* border: #ccc 2px solid; */
+    width: 90rem;
+    margin: auto;
+    overflow: scroll;
+    display: flex;
+    flex-direction: column;
+}
+
+.response-table::-webkit-scrollbar {
+    display: none;
+}
+
+.title-row {
+    justify-content: center;
+    align-items: center;
+    margin: 1rem;
+}
+
+.response-table tr {
+    display: flex;
+    justify-content: space-around;
+    margin: 1rem;
+}
+
+.response-table tr:nth-child(even) td,
+.response-table tr:nth-child(even) th {
+    background-color: #ddd;
+}
+
+
+.response-table td,
+ .response-table th {
+    padding: 0.5rem;
+    border: #ccc 2px solid;
+    border-radius: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.response-table tr th {
+    width: 15rem;
+}
+
+.response-table tr td {
+    width: 15rem;
 }

@@ -2,76 +2,170 @@ import indexScriptModule from "../index-script.js";
 import codemaker from "../utils/codemaker.js";
 
 const viewSurveyData = {
-    tag: 'div',
-    attributes: {
-        class: 'main-container'
-    },
-    subTags: [
-        {
-            tag: 'div',
-            attributes: {
-                class: 'survey-details-container'
-            },
-            subTags: [
-                {
-                    tag: 'h2',
-                    attributes: {
-                        class: 'survey-title-container'
-                    }
-                },
-                {
-                    tag: 'h4',
-                    attributes: {
-                        class: 'survey-description-container'
-                    }
-                }
-            ]
-        },
-        {
-            tag: 'div',
-            attributes: {
-                class: 'responses-container'
-            }
-        },
-        {
-            tag: 'div',
-            attributes: {
-                class: 'pagination-container'
-            }
-        }
-    ]
+  tag: "div",
+  attributes: {
+    class: "main-container",
+  }
 };
 
 const urlParams = new URLSearchParams(window.location.search);
-const surveyId = urlParams.get('surveyId');
+const surveyId = urlParams.get("surveyId");
 
-async function getSurveyDetails(surveyId) {
-    try {
-        const response = await fetch(`${indexScriptModule.backendConnectionUrl}/surveyresponse/getResponsesBySurveyId/${surveyId}`);
+async function getResponses(surveyId) {
+  try {
+    const response = await fetch(
+      `${indexScriptModule.backendConnectionUrl}/surveyresponse/getResponsesBySurveyId/${surveyId}`
+    );
 
-        console.log(response);
-
-        if(response.status !== 200) {
-            swal('Error', response.body, 'warning');
-        }
-        else {
-            const surveyDetails = await response.json();
-            console.log(surveyDetails);
-        }
-        
+    if (response.status !== 200) {
+      return {
+        errorObject: response.body,
+      };
+    } else {
+      const responses = await response.json();
+      console.log(responses);
+      return responses;
     }
-    catch(error) {
-        console.log(error);
-        swal('Error', 'There was and error from server', 'warning');
-    }
+  } catch (error) {
+    return {
+      errorObject: error,
+    };
+  }
 }
 
+async function getSurveyDetails(surveyId) {
+  try {
+    const response = await fetch(
+      `${indexScriptModule.backendConnectionUrl}/surveydetail/getSurveyById/${surveyId}`
+    );
+
+    if (response.status !== 200) {
+      return {
+        errorObject: response.body,
+      };
+    } else {
+      const surveyDetails = await response.json();
+      console.log(surveyDetails);
+      return surveyDetails;
+    }
+  } catch {
+    return {
+      errorObject: error,
+    };
+  }
+}
+
+function getTable(surveyDetails, responses) {
+    const tableElement = document.createElement('table');
+    tableElement.setAttribute('class', 'response-table');
+
+    const titleRow = document.createElement('tr');
+    titleRow.setAttribute('class', 'title-row');
+
+    const titleHeader = document.createElement('th');
+    titleHeader.colSpan = surveyDetails.questions.length + 1;
+    titleHeader.innerText = surveyDetails.title;
+
+    titleRow.appendChild(titleHeader);
+    tableElement.appendChild(titleRow);
+
+    console.log(surveyDetails.questions);
+
+    const questionRow = getQuestionRow(surveyDetails.questions, surveyDetails.surveyId);
+
+    tableElement.appendChild(questionRow);
+
+    responses.forEach(response => {
+        const responseRowTr = getResponsesRow(response);
+        tableElement.appendChild(responseRowTr);
+    });
+
+    return tableElement;
+}
+
+function getResponsesRow(response) {
+    console.log(response);
+
+    const responseRow = document.createElement('tr');
+
+    const responseIdTd = document.createElement('td');
+    responseIdTd.innerText = response.responseId;
+
+    responseRow.appendChild(responseIdTd);
+
+    response.answers.forEach((answer) => {
+        const answerDataTd = document.createElement('td');
+        if(answer.answerText != null) {
+            answerDataTd.innerText = answer.answerText;
+        }
+        else if(answer.answerScq != null) {
+            answerDataTd.innerText = answer.answerScq;
+        }
+        else if(answer.answerMcq != null) {
+            answer.answerMcq.forEach((option) => {
+                answerDataTd.innerText += option;
+            })
+        }
+        else if(answer.answerNumber != null) {
+            answerDataTd.innerText = answer.answerNumber;
+        }
+        else {
+            answerDataTd.innerText = answer.answerFile;
+        }
+        responseRow.appendChild(answerDataTd);
+    });
+
+    return responseRow;
+}
+
+function getQuestionRow(questions, surveyId) {
+    const questionRow = document.createElement('tr');
+
+    const surveyIdTh = document.createElement('th');
+    surveyIdTh.innerText = surveyId;
+
+    questionRow.appendChild(surveyIdTh);
+
+    questions.forEach(question => {
+        const questionElement = document.createElement('th');
+        questionElement.innerText = question.title;
+
+        questionRow.appendChild(questionElement);
+    });
+
+    return questionRow;
+}
+
+
 async function getData() {
-    const resultElement = codemaker.convertIntoHtml(viewSurveyData);
+  const resultElement = codemaker.convertIntoHtml(viewSurveyData);
 
-    await getSurveyDetails(surveyId);
+  console.log(resultElement);
 
-    return resultElement;
+  const surveyDetails = await getSurveyDetails(surveyId);
+  const responses = await getResponses(surveyId);
+
+  console.log(surveyDetails);
+  console.log(responses);
+
+  let tableElement;
+
+  if (!surveyDetails.errorObject) {
+    if (!responses.errorObject) {
+      tableElement = getTable(surveyDetails, responses);
+    } else {
+      swal("Error", responses.errorObject.json, "warning");
+    }
+  } else {
+    swal("Error", surveyDetails.errorObject.json, "warning");
+  }
+
+  if (tableElement) {
+    console.log(tableElement)
+    resultElement.appendChild(tableElement);
+  }
+
+  return resultElement;
 }
 
 export { getData };

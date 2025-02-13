@@ -144,7 +144,7 @@ function attachEventHandlers(formElement) {
         surveyData.adminId = document.getElementById('username-display').innerText;
 
         try {
-          const response = await fetch(`${backendConnectionUrl}/surveydetail/publish`, {
+          const response = await fetch(`${indexScriptModule.backendConnectionUrl}/surveydetail/publish`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -154,7 +154,7 @@ function attachEventHandlers(formElement) {
           .catch((error) => {
             swal(
               "Error",
-              "There was an error connecting to the backend. Please try again after some time.",
+              error,
               "error"
             );
           });
@@ -168,7 +168,7 @@ function attachEventHandlers(formElement) {
         } catch (error) {
           swal(
             "Error",
-            "There was an error connecting to the backend. Please try again after some time.",
+            error,
             "error"
           );
         }
