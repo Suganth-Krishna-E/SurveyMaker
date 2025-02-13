@@ -1,4 +1,5 @@
-import codemaker from "../utils/codemaker";
+import indexScriptModule from "../index-script.js";
+import codemaker from "../utils/codemaker.js";
 
 const viewSurveyData = {
     tag: 'div',
@@ -46,18 +47,31 @@ const surveyId = urlParams.get('surveyId');
 
 async function getSurveyDetails(surveyId) {
     try {
-        const response = await fetch(`http://localhost:8080/surveydetail/getSurveyById/${surveyId}`);
-        const surveyDetails = await response.json();
+        const response = await fetch(`${indexScriptModule.backendConnectionUrl}/surveyresponse/getResponsesBySurveyId/${surveyId}`);
+
+        console.log(response);
+
+        if(response.status !== 200) {
+            swal('Error', response.body, 'warning');
+        }
+        else {
+            const surveyDetails = await response.json();
+            console.log(surveyDetails);
+        }
+        
     }
     catch(error) {
+        console.log(error);
         swal('Error', 'There was and error from server', 'warning');
     }
 }
 
-export function getData() {
+async function getData() {
     const resultElement = codemaker.convertIntoHtml(viewSurveyData);
 
-    getSurveyDetails(surveyId);
+    await getSurveyDetails(surveyId);
 
     return resultElement;
 }
+
+export { getData };

@@ -8,8 +8,8 @@ const routingTitleLocationModulesMap = {
     'createsurvey': './modules/createsurvey.js',
     'surveySubmit': './modules/surveysubmit.js',
     'viewStats': './modules/viewstats.js',
-    'fillSurvey': './modules/fillSurvey.js',
-    'viewSurveyDetails': './modules/viewSurveyData.js'
+    'fillSurvey': './modules/fillsurvey.js',
+    'viewSurveyDetails': './modules/viewsurveydata.js'
 }
 
 const backendConnectionUrl = 'http://localhost:8080';
@@ -33,8 +33,6 @@ async function loadModule(moduleName) {
             document.body.removeChild(mainContainerData);
         }
         document.body.appendChild(container);
-
-        // document.body.replaceChild(mainContainerData, container);
     
         if(moduleData.attachEventListeners !== undefined) {
             moduleData.attachEventListeners();
@@ -180,4 +178,4 @@ async function loadLoginNavBar(username) {
     document.body.replaceChildren(loginNavBarElement);
 }
 
-export default { checkIsUserAvailable, addNewUser, loadModule, loginToSite, loadHomePageAfterLogin, loadSurveySubmitPage, loadViewStatsPage, loadFillSurveyModule, loadSurveyDetails };
+export default { checkIsUserAvailable, addNewUser, loadModule, loginToSite, loadHomePageAfterLogin, loadSurveySubmitPage, loadViewStatsPage, loadFillSurveyModule, loadSurveyDetails, backendConnectionUrl };

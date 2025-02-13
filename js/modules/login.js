@@ -162,23 +162,41 @@ function attachValidationHandlers() {
 
 
     formBase.addEventListener('submit', (e) => {
+        let hasError = false;
+        
         for (const element of inputElements) {
-            if (element.style.border === '2px solid red' || element.value === '') {
+            const id = element.getAttribute('id');
+            const value = element.value.trim();
+    
+            if (validationsOfElements[id]) {
+                validationsOfElements[id]({ target: element }); // Trigger validation
+            }
+    
+            if (element.style.border === '2px solid red' || value === '') {
+                element.style.border = '2px solid red'; // Ensure red border for empty fields
                 element.focus();
-                e.preventDefault();
-                // document.getElementById
-                return;
-            } else {
-                e.preventDefault();
-                if (indexScriptModule.loginToSite(document.getElementById('login-username').value, document.getElementById('login-password').value)) {
-                    swal("Login Successful", "Please use our features", "success");
-                    indexScriptModule.loadHomePageAfterLogin(document.getElementById('login-username').value);
-                } else {
-                    swal("Wrong Credentials", "Please provide correct credentials", "warning");
-                }
+                hasError = true;
             }
         }
+    
+        if (hasError) {
+            e.preventDefault();
+            return;
+        }
+    
+        // Proceed with login
+        e.preventDefault();
+        if (indexScriptModule.loginToSite(
+            document.getElementById('login-username').value, 
+            document.getElementById('login-password').value)) {
+            
+            swal("Login Successful", "Please use our features", "success");
+            indexScriptModule.loadHomePageAfterLogin(document.getElementById('login-username').value);
+        } else {
+            swal("Wrong Credentials", "Please provide correct credentials", "warning");
+        }
     });
+    
 
     for (const element of inputElements) {
         const id = element.getAttribute('id');

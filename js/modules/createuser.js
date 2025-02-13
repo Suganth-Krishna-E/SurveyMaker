@@ -269,7 +269,6 @@ const validationsOfElements = {
         } 
         else {
             event.target.style.border = '2px solid red';
-            console.error(result.message);
         }
     }
 }
@@ -455,7 +454,6 @@ function isStartingLetter(text) {
         }
     }
     else {
-        console.error("Undefined value passed");
         return false;
     }
 }
@@ -473,7 +471,6 @@ function isStartingOrEnding(text) {
         }
     }
     else {
-        console.error("Undefined value passed");
         return false;
     }
 }

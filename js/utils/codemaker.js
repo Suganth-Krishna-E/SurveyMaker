@@ -1,21 +1,3 @@
-// const simpleTagWithChildElement = {
-//     subDataElements: [
-//         {
-//             tag: 'p',
-//             valueInsideTag: 'Hello this is sample'
-//         },
-//         {
-//             tag: 'p',
-//             valueInsideTag: 'Hello this is sample'
-//         },
-//     ]
-// };
-
-// console.log(simpleTagWithChildElement);
-
-
-// const convertedElementHtml = convertIntoHtml(dataInput);
-
 function convertIntoHtml(data) {
     if(data !== undefined) {
         if(data.tag !== undefined) {
@@ -42,12 +24,6 @@ function convertIntoHtml(data) {
                         }
                     }
                 }
-                else if(key === 'validations') {
-                    // addCustomValidation(value.validationName, value.errorMessage, rootTag,);
-                }
-                else {
-                    // rootTag.setAttribute(key, value);
-                }
             }
             return rootTag;
         }
@@ -59,14 +35,12 @@ function convertIntoHtml(data) {
             return rootTag;
         }
         else {
-            console.log("No tag key found");
             const returnElement = document.createElement('p');
             returnElement.innerText = 'No tag key found or no elements found';
             return returnElement;
         }
     }
     else {
-        console.error("Value given is undefined");
         const returnElement = document.createElement('p');
         returnElement.innerText = 'Value given is undefined';
         return returnElement;
@@ -74,22 +48,3 @@ function convertIntoHtml(data) {
 }
 
 export default { convertIntoHtml };
-
-// function addCustomValidation(validationName, errorMessage = 'Invalid format', rootTag) {
-//     if(validationName === 'indian-pincode') {
-//         rootTag.addEventListener("blur", () => {
-//             if(/^[1-9][0-9]{5}$/.test(rootTag.value)) {
-//                 console.log("Valid Pincode");
-//                 rootTag.setCustomValidity('');
-//             }
-//             else {
-//                 console.log("Invalid Pincode");
-//                 rootTag.setCustomValidity(errorMessage);
-//             }
-//         });
-//     }
-// }
-
-// console.log(convertedElementHtml);  
-
-// document.getElementById("mainDiv").appendChild(convertedElementHtml);

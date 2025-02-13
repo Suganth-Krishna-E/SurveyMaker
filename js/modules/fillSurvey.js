@@ -105,7 +105,7 @@ function attachEventHandlers() {
 async function fetchSurveyData(surveyId) {
   try {
     const response = await fetch(
-      `http://localhost:8080/surveydetail/getSurveyById/${surveyId}`,
+      `${backendConnectionUrl}/surveydetail/getSurveyById/${surveyId}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -115,11 +115,9 @@ async function fetchSurveyData(surveyId) {
     if (response.ok) {
       return await response.json();
     } else {
-      console.error("Failed to fetch survey data");
       return null;
     }
   } catch (error) {
-    console.error("Error fetching survey data:", error);
     return null;
   }
 }
@@ -283,7 +281,7 @@ function getSelectedInputs(inputs) {
 async function submitSurveyResponse(responsePayload) {
   try {
     const response = await fetch(
-      `http://localhost:8080/surveyresponse/submit`,
+      `${backendConnectionUrl}/surveyresponse/submit`,
       {
         method: "POST",
         headers: {
@@ -294,7 +292,6 @@ async function submitSurveyResponse(responsePayload) {
     );
     return response.ok;
   } catch (error) {
-    console.error("Error submitting survey response:", error);
     return false;
   }
 }
