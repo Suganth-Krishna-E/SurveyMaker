@@ -403,6 +403,13 @@ function validateSurvey(formElement) {
       }
     });
   });
+
+  document.querySelectorAll('textarea').forEach(textElement => {
+    if(textElement.value.length > 5000) {
+      isValid = false;
+      textElement.style.borderColor = "red";
+    }
+  })
   return isValid;
 }
 

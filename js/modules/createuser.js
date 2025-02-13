@@ -132,15 +132,33 @@ const dataInput =  {
                                     valueInsideTag: 'New Password'
                                 },
                                 {
-                                    tag: 'input',
+                                    tag: 'div',
                                     attributes: {
-                                        type: 'password',
-                                        id: 'password',
-                                        name: 'passsword',
-                                        placeholder: 'Enter your new password',
-                                        required: true  
+                                        class: 'password-container'
                                     },
+                                    subTags: [
+                                        {
+                                            tag: 'input',
+                                            attributes: {
+                                                type: 'password',
+                                                id: 'password',
+                                                name: 'passsword',
+                                                placeholder: 'Enter your new password',
+                                                required: true  
+                                            },
+                                        },
+                                        {
+                                            tag: 'button',
+                                            attributes: {
+                                                type: 'button',
+                                                id: 'toggle-password-visibility',
+                                                class: 'toggle-password-visibility'
+                                            },
+                                            valueInsideTag: '👁️'
+                                        }
+                                    ]
                                 }
+                                
                             ]
                         },
                     ]
@@ -189,6 +207,7 @@ labels.forEach(element => {
 submitbutton.style.cursor = 'not-allowed';
 
 submitbutton.addEventListener('click', (e) => {
+    allElemntsValid = true;
     checkAllFeildsValid();
     const data = {
         name: inputelements[0].value,
@@ -480,7 +499,7 @@ function validatePassword(password) {
     const hasUppercase = /[A-Z]/.test(password);
     const hasLowercase = /[a-z]/.test(password);
     const hasNumber = /\d/.test(password);
-    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>_]/.test(password);
 
     if (password.length < minLength) {
         return { valid: false, message: "Password must be at least 8 characters long" };
@@ -501,8 +520,25 @@ function validatePassword(password) {
     return { valid: true, message: "Password is valid" };
 }
 
+function attachPasswordVisibilityToggle() {
+    const passwordInput = returnElement.querySelector('#password');
+    const toggleButton = returnElement.querySelector('#toggle-password-visibility');
+
+    toggleButton.addEventListener('click', () => {
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleButton.textContent = '🙈';
+        } else {
+            passwordInput.type = 'password';
+            toggleButton.textContent = '👁️';
+        }
+    });
+}
+
 
 function getData() {
+    attachPasswordVisibilityToggle();
+
    return returnElement;
 }
 

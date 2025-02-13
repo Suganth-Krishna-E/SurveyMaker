@@ -169,11 +169,11 @@ function attachValidationHandlers() {
             const value = element.value.trim();
     
             if (validationsOfElements[id]) {
-                validationsOfElements[id]({ target: element }); // Trigger validation
+                validationsOfElements[id]({ target: element });
             }
     
             if (element.style.border === '2px solid red' || value === '') {
-                element.style.border = '2px solid red'; // Ensure red border for empty fields
+                element.style.border = '2px solid red';  
                 element.focus();
                 hasError = true;
             }
@@ -184,7 +184,6 @@ function attachValidationHandlers() {
             return;
         }
     
-        // Proceed with login
         e.preventDefault();
         if (indexScriptModule.loginToSite(
             document.getElementById('login-username').value, 

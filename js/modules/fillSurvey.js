@@ -94,13 +94,64 @@ function attachEventHandlers() {
       const userId = document.getElementById("username-display").innerText;
       const answers = collectResponses();
       const responsePayload = { surveyId, userId, answers };
-      const result = await submitSurveyResponse(responsePayload);
+      let result;
+
+      if(validateSurveyFillSubmit(answers)) {
+        result = await submitSurveyResponse(responsePayload);
+      }
+      else {
+        swal("Error", "Incomplete", "error");
+      }
       if (result) {
         swal("Success", "Survey submitted successfully", "success");
+        clearAllInputs();
       } else {
         swal("Error", "Failed to submit survey", "error");
       }
     });
+
+    returnElement.querySelectorAll('label').forEach(element => {
+      element.addEventListener('mouseover', () => {
+        element.style.cursor = 'pointer';
+      });
+    });
+}
+
+function validateSurveyFillSubmit(answers) {
+
+  let answersValid = true;
+
+  if(answers.length === 0) {
+    answersValid = false;
+  }
+
+  answers.forEach(answer => {
+    if(answer.answerText && answer.answerText === '') {
+      answersValid = false;
+    }
+    else if(answer.answerNumber && answer.answerNumber === '') {
+      answersValid = false;
+    }
+    else if(answer.answerFile && answer.answerFile === '') {
+      answersValid = false;
+    }
+    else if(answer.answerScq && answer.answerSqc.length === 0) {
+      answersValid = false;
+    }
+    else if(answer.answerMcq && answer.answerMcq.length === 0) {
+      answersValid = false;
+    }
+  });
+
+  return answersValid;
+}
+
+function clearAllInputs() {
+  const inputs = document.querySelectorAll("input");
+
+  inputs.forEach(input => {
+    input.value = '';
+  })
 }
 
 async function fetchSurveyData(surveyId) {
@@ -147,18 +198,24 @@ function displaySurveyQuestions(questions, surveyData) {
   });
 }
 
-function createQuestionElement(question) {
-  const questionContainer = document.createElement("div");
-  questionContainer.setAttribute("class", "question-container");
-
-  const questionTitle = document.createElement("div");
+function getTitleContainer(question, type) {
+  const questionTitle = document.createElement(type);
   questionTitle.className = "question-title-text";
   questionTitle.innerText = question.questionNumber + ") " + question.title;
-  questionContainer.appendChild(questionTitle);
+
+  return questionTitle;
+}
+
+function createQuestionElement(question) {
+
+  const questionContainer = document.createElement('div');
+  questionContainer.setAttribute("class", "question-container");
 
   if (question.type === "mcq") {
     let optionCount = 1;
     question.options.forEach((option) => {
+      questionContainer.appendChild(getTitleContainer(question, 'div'));  
+
       const optionContainer = document.createElement("div");
       optionContainer.className = "mcq-answer-option-container";
 
@@ -180,6 +237,7 @@ function createQuestionElement(question) {
     });
   } else if (question.type === "scq") {
     let optionCount = 1;
+    questionContainer.appendChild(getTitleContainer(question, 'div'));  
     question.options.forEach((option) => {
       const optionContainer = document.createElement("div");
       optionContainer.className = "scq-option-answer-container";
@@ -202,28 +260,54 @@ function createQuestionElement(question) {
       optionCount++;
     });
   } else if (question.type === "numeric") {
+    const label = getTitleContainer(question, 'label');
+    label.setAttribute('for', `answer-box-${question.questionNumber}`);
+
+    questionContainer.appendChild(label);  
+
+
     const answerInput = document.createElement("input");
     answerInput.type = "number";
-    answerInput.name = question.id;
+    answerInput.name = question.questionNumber;
+    answerInput.id = `answer-box-${question.questionNumber}`
     answerInput.className = "answer-box";
+    answerInput.placeholder = question.title;
+    
     questionContainer.appendChild(answerInput);
   } else if (question.type === "file") {
+    const label = getTitleContainer(question, 'label');
+    label.setAttribute('for', `answer-box-${question.questionNumber}`);
+
+    questionContainer.appendChild(label);  
+
     const answerInput = document.createElement("input");
     answerInput.type = "file";
     answerInput.accept = question.fileType;
-    answerInput.name = question.id;
+    answerInput.id = `answer-box-${question.questionNumber}`
+    answerInput.name = question.questionNumber;
     answerInput.className = "answer-box";
+    answerInput.placeholder = question.title;
     questionContainer.appendChild(answerInput);
   } else {
+    const label = getTitleContainer(question, 'label');
+    label.setAttribute('for', `answer-box-${question.questionNumber}`);
+
+    questionContainer.appendChild(label);  
+    
     const answerInput = document.createElement("input");
     answerInput.type = "text";
-    answerInput.name = question.id;
+    answerInput.name = question.questionNumber;
+    answerInput.id = `answer-box-${question.questionNumber}`
     answerInput.className = "answer-box";
+    answerInput.placeholder = question.title;
     questionContainer.appendChild(answerInput);
   }
 
   return questionContainer;
 }
+
+
+
 
 function collectResponses() {
   const responses = [];

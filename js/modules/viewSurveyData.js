@@ -5,11 +5,8 @@ const viewSurveyData = {
   tag: "div",
   attributes: {
     class: "main-container",
-  }
+  },
 };
-
-const urlParams = new URLSearchParams(window.location.search);
-const surveyId = urlParams.get("surveyId");
 
 async function getResponses(surveyId) {
   try {
@@ -18,12 +15,22 @@ async function getResponses(surveyId) {
     );
 
     if (response.status !== 200) {
-      return {
-        errorObject: response.body,
-      };
+      const reader = response.body.getReader();
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) {
+          return;
+        }
+        const decoder = new TextDecoder();
+        const str = decoder.decode(value);
+
+        return {
+            errorObject: str,
+          };
+      }
     } else {
       const responses = await response.json();
-      console.log(responses);
       return responses;
     }
   } catch (error) {
@@ -40,14 +47,24 @@ async function getSurveyDetails(surveyId) {
     );
 
     if (response.status !== 200) {
-      return {
-        errorObject: response.body,
-      };
-    } else {
-      const surveyDetails = await response.json();
-      console.log(surveyDetails);
-      return surveyDetails;
-    }
+        const reader = response.body.getReader();
+  
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) {
+            return;
+          }
+          const decoder = new TextDecoder();
+          const str = decoder.decode(value);
+  
+          return {
+              errorObject: str,
+            };
+        }
+      } else {
+        const responses = await response.json();
+        return responses;
+      }
   } catch {
     return {
       errorObject: error,
@@ -56,97 +73,87 @@ async function getSurveyDetails(surveyId) {
 }
 
 function getTable(surveyDetails, responses) {
-    const tableElement = document.createElement('table');
-    tableElement.setAttribute('class', 'response-table');
+  const tableElement = document.createElement("table");
+  tableElement.setAttribute("class", "response-table");
 
-    const titleRow = document.createElement('tr');
-    titleRow.setAttribute('class', 'title-row');
+  const titleRow = document.createElement("tr");
+  titleRow.setAttribute("class", "title-row");
+  const titleHeader = document.createElement("th");
+  titleHeader.colSpan = surveyDetails.questions.length + 1;
+  titleHeader.innerText = surveyDetails.title;
 
-    const titleHeader = document.createElement('th');
-    titleHeader.colSpan = surveyDetails.questions.length + 1;
-    titleHeader.innerText = surveyDetails.title;
+  titleRow.appendChild(titleHeader);
+  tableElement.appendChild(titleRow);
 
-    titleRow.appendChild(titleHeader);
-    tableElement.appendChild(titleRow);
+  const questionRow = getQuestionRow(
+    surveyDetails.questions,
+    surveyDetails.surveyId
+  );
 
-    console.log(surveyDetails.questions);
+  tableElement.appendChild(questionRow);
 
-    const questionRow = getQuestionRow(surveyDetails.questions, surveyDetails.surveyId);
+  responses.forEach((response) => {
+    const responseRowTr = getResponsesRow(response);
+    tableElement.appendChild(responseRowTr);
+  });
 
-    tableElement.appendChild(questionRow);
-
-    responses.forEach(response => {
-        const responseRowTr = getResponsesRow(response);
-        tableElement.appendChild(responseRowTr);
-    });
-
-    return tableElement;
+  return tableElement;
 }
 
 function getResponsesRow(response) {
-    console.log(response);
+  const responseRow = document.createElement("tr");
 
-    const responseRow = document.createElement('tr');
+  const responseIdTd = document.createElement("td");
+  responseIdTd.innerText = response.responseId;
 
-    const responseIdTd = document.createElement('td');
-    responseIdTd.innerText = response.responseId;
+  responseRow.appendChild(responseIdTd);
 
-    responseRow.appendChild(responseIdTd);
+  response.answers.forEach((answer) => {
+    const answerDataTd = document.createElement("td");
+    if (answer.answerText != null) {
+      answerDataTd.innerText = answer.answerText;
+    } else if (answer.answerScq != null) {
+      answerDataTd.innerText = answer.answerScq;
+    } else if (answer.answerMcq != null) {
+      answer.answerMcq.forEach((option) => {
+        answerDataTd.innerText += option;
+      });
+    } else if (answer.answerNumber != null) {
+      answerDataTd.innerText = answer.answerNumber;
+    } else {
+      answerDataTd.innerText = answer.answerFile;
+    }
+    responseRow.appendChild(answerDataTd);
+  });
 
-    response.answers.forEach((answer) => {
-        const answerDataTd = document.createElement('td');
-        if(answer.answerText != null) {
-            answerDataTd.innerText = answer.answerText;
-        }
-        else if(answer.answerScq != null) {
-            answerDataTd.innerText = answer.answerScq;
-        }
-        else if(answer.answerMcq != null) {
-            answer.answerMcq.forEach((option) => {
-                answerDataTd.innerText += option;
-            })
-        }
-        else if(answer.answerNumber != null) {
-            answerDataTd.innerText = answer.answerNumber;
-        }
-        else {
-            answerDataTd.innerText = answer.answerFile;
-        }
-        responseRow.appendChild(answerDataTd);
-    });
-
-    return responseRow;
+  return responseRow;
 }
 
 function getQuestionRow(questions, surveyId) {
-    const questionRow = document.createElement('tr');
+  const questionRow = document.createElement("tr");
 
-    const surveyIdTh = document.createElement('th');
-    surveyIdTh.innerText = surveyId;
+  const surveyIdTh = document.createElement("th");
+  surveyIdTh.innerText = surveyId;
 
-    questionRow.appendChild(surveyIdTh);
+  questionRow.appendChild(surveyIdTh);
 
-    questions.forEach(question => {
-        const questionElement = document.createElement('th');
-        questionElement.innerText = question.title;
+  questions.forEach((question) => {
+    const questionElement = document.createElement("th");
+    questionElement.innerText = question.title;
 
-        questionRow.appendChild(questionElement);
-    });
+    questionRow.appendChild(questionElement);
+  });
 
-    return questionRow;
+  return questionRow;
 }
-
 
 async function getData() {
   const resultElement = codemaker.convertIntoHtml(viewSurveyData);
-
-  console.log(resultElement);
+  const urlParams = new URLSearchParams(window.location.search);
+  const surveyId = urlParams.get("surveyId");
 
   const surveyDetails = await getSurveyDetails(surveyId);
   const responses = await getResponses(surveyId);
-
-  console.log(surveyDetails);
-  console.log(responses);
 
   let tableElement;
 
@@ -154,14 +161,13 @@ async function getData() {
     if (!responses.errorObject) {
       tableElement = getTable(surveyDetails, responses);
     } else {
-      swal("Error", responses.errorObject.json, "warning");
+      swal("Error", responses.errorObject, "warning");
     }
   } else {
-    swal("Error", surveyDetails.errorObject.json, "warning");
+    swal("Error", surveyDetails.errorObject, "warning");
   }
 
   if (tableElement) {
-    console.log(tableElement)
     resultElement.appendChild(tableElement);
   }
 

@@ -125,7 +125,10 @@ body {
 
 select {
     cursor: pointer;
+}
 
+label {
+    cursor: pointer;
 }
 
 input[type="text"], textarea, select, input[type="number"] {
@@ -494,3 +497,19 @@ button:hover {
 .response-table tr td {
     width: 15rem;
 }
+
+.page-number-footer {
+    margin: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.page-number-footer div {
+    border: 2px solid gray;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    cursor: pointer;
+}
+

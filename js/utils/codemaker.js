@@ -17,7 +17,7 @@ function convertIntoHtml(data) {
                 else if(key === 'attributes') {
                     for(const attval in value) {
                         if(attval === 'required') {
-                            // rootTag.setAttribute('required', 'required');
+                            rootTag.setAttribute('required', 'required');
                         }
                         else {
                             rootTag.setAttribute(attval, value[attval]);

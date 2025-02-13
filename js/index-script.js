@@ -12,7 +12,7 @@ const routingTitleLocationModulesMap = {
     'viewSurveyDetails': './modules/viewsurveydata.js'
 }
 
-const backendConnectionUrl = 'http://localhost:8080';
+const backendConnectionUrl = 'http://localhost:8080/v1';
 
 
 function loadInitialData() {
@@ -107,8 +107,6 @@ function addNewUser(data) {
 
     if(validateNewUserInsertion(data)) {
         const newUser = new User(data.name, data.email, data.customerid, data.pincode, data.password);
-        listOfUserDetails.push(newUser);
-        userCustomerIdList.push(data.customerid);
 
         return true;
     }
