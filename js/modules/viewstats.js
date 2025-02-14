@@ -54,7 +54,7 @@ async function getTotalPages(adminId) {
       const responses = await totalSurveys.json();
       return responses;
     }
-  } catch {
+  } catch(error) {
     return {
       errorObject: error,
     };
