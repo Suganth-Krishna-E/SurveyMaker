@@ -96,6 +96,7 @@ function attachEventHandlers() {
       const responsePayload = { surveyId, userId, answers };
       let result;
 
+
       if(validateSurveyFillSubmit(answers)) {
         result = await submitSurveyResponse(responsePayload);
       }
@@ -119,27 +120,23 @@ function attachEventHandlers() {
 
 function validateSurveyFillSubmit(answers) {
 
-  let answersValid = true;
-
-  if(answers.length === 0) {
-    answersValid = false;
-  }
+  let answersValid = false;
 
   answers.forEach(answer => {
-    if(answer.answerText && answer.answerText === '') {
-      answersValid = false;
+    if(answer.answerText && answer.answerText !== '') {
+      answersValid = true;
     }
-    else if(answer.answerNumber && answer.answerNumber === '') {
-      answersValid = false;
+    else if(answer.answerNumber && answer.answerNumber !== '') {
+      answersValid = true;
     }
-    else if(answer.answerFile && answer.answerFile === '') {
-      answersValid = false;
+    else if(answer.answerFile && answer.answerFile !== '') {
+      answersValid = true;
     }
-    else if(answer.answerScq && answer.answerSqc.length === 0) {
-      answersValid = false;
+    else if(answer.answerScq && answer.answerScq.length > 0) {
+      answersValid = true;
     }
-    else if(answer.answerMcq && answer.answerMcq.length === 0) {
-      answersValid = false;
+    else if(answer.answerMcq && answer.answerMcq.length > 0) {
+      answersValid = true;
     }
   });
 
